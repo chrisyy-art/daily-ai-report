@@ -1,6 +1,7 @@
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkDirective from "remark-directive";
+import remarkCjkFriendly from "remark-cjk-friendly";
 import remarkSummary from "@/lib/markdown/remark-summary";
 
 // 文字等于这些值的链接使用专门的样式（紧跟正文的蓝色链接）
@@ -36,7 +37,7 @@ const components: Components = {
 export default function Markdown({ content }: { content: string }) {
   return (
     <div className="md-body">
-      <ReactMarkdown remarkPlugins={[remarkGfm, remarkDirective, remarkSummary]} components={components}>
+      <ReactMarkdown remarkPlugins={[remarkGfm, remarkCjkFriendly, remarkDirective, remarkSummary]} components={components}>
         {content}
       </ReactMarkdown>
     </div>

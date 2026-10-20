@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Markdown from "@/components/shared/Markdown";
 import ReportHeader, { DailyBadge } from "@/components/shared/ReportHeader";
+import { htmlToMarkdown } from "@/lib/markdown/html-to-markdown";
 import type { FieldErrors } from "@/lib/validation";
 
 export type EditorValues = {
@@ -31,6 +32,23 @@ const SNIPPETS = [
   { label: "体验地址", title: "体验地址链接", before: "[体验地址](", after: ")", placeholder: "https://" },
 ] as const;
 
+const IMPORT_ACCEPT = ".docx,.md,.markdown,.txt,.html,.htm";
+const KEEP_FORMAT_KEY = "daily-ai:paste-keep-format";
+
+/** 把多段内容作为独立段落插入：与前后文字之间补齐空行 */
+function asBlock(before: string, text: string, after: string) {
+  if (!text.includes("\n")) return text;
+  const lead = before === "" || before.endsWith("\n\n") ? "" : before.endsWith("\n") ? "\n" : "\n\n";
+  const tail = after === "" || after.startsWith("\n\n") ? "" : after.startsWith("\n") ? "\n" : "\n\n";
+  return lead + text + tail;
+}
+
+/** 首行是一级 / 二级标题时，拆出来作为日报标题 */
+function splitLeadingTitle(md: string) {
+  const m = md.match(/^#{1,2} +(.+)\n*/);
+  return m ? { title: m[1].replace(/\*\*/g, "").trim(), body: md.slice(m[0].length) } : null;
+}
+
 export default function ReportEditor({ id, initial, initialPublished = false }: Props) {
   const router = useRouter();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -43,6 +61,29 @@ export default function ReportEditor({ id, initial, initialPublished = false }: 
   const [saving, setSaving] = useState<null | "draft" | "publish">(null);
   const [notice, setNotice] = useState("");
   const [mobileTab, setMobileTab] = useState<"edit" | "preview">("edit");
+  const [keepFormat, setKeepFormat] = useState(true);
+  const [importing, setImporting] = useState(false);
+  const [hint, setHint] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // 记住"粘贴保留格式"开关（仅本浏览器）
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(KEEP_FORMAT_KEY) === "0") setKeepFormat(false);
+    } catch {}
+  }, []);
+
+  function toggleKeepFormat(on: boolean) {
+    setKeepFormat(on);
+    try {
+      localStorage.setItem(KEEP_FORMAT_KEY, on ? "1" : "0");
+    } catch {}
+  }
+
+  function flash(message: string) {
+    setHint(message);
+    window.setTimeout(() => setHint((h) => (h === message ? "" : h)), 4000);
+  }
 
   const dirty = JSON.stringify(values) !== JSON.stringify(saved);
 
@@ -76,6 +117,79 @@ export default function ReportEditor({ id, initial, initialPublished = false }: 
       const selStart = start + lead.length + s.before.length;
       el.setSelectionRange(selStart, selStart + selected.length);
     });
+  }
+
+  /** 在光标处插入文本；优先用 execCommand，保留浏览器的撤销（Cmd/Ctrl+Z）记录 */
+  function insertAtCursor(raw: string) {
+    const el = textareaRef.current;
+    if (!el) return;
+    const { selectionStart: start, selectionEnd: end, value } = el;
+    const text = asBlock(value.slice(0, start), raw, value.slice(end));
+    el.focus();
+    const ok = typeof document.execCommand === "function" && document.execCommand("insertText", false, text);
+    if (!ok) {
+      set("content", value.slice(0, start) + text + value.slice(end));
+      requestAnimationFrame(() => el.setSelectionRange(start + text.length, start + text.length));
+    }
+  }
+
+  /** 粘贴富文本（语雀 / 飞书 / Word / 网页）时转成 Markdown，保留链接、加粗、列表等格式 */
+  function onPaste(e: React.ClipboardEvent<HTMLTextAreaElement>) {
+    if (!keepFormat) return;
+    const html = e.clipboardData.getData("text/html");
+    if (!html) return; // 纯文本粘贴走浏览器默认行为
+    const md = htmlToMarkdown(html);
+    if (!md) return;
+    e.preventDefault();
+    insertAtCursor(md);
+    flash("已保留格式粘贴（自动转换为 Markdown）");
+  }
+
+  async function readImportFile(file: File): Promise<{ markdown: string; images?: number }> {
+    const name = file.name.toLowerCase();
+    if (/\.(md|markdown|txt)$/.test(name)) return { markdown: (await file.text()).trim() };
+    if (/\.html?$/.test(name)) return { markdown: htmlToMarkdown(await file.text()) };
+    if (name.endsWith(".docx")) {
+      const body = new FormData();
+      body.append("file", file);
+      const res = await fetch("/api/admin/import", { method: "POST", body });
+      const data = await res.json().catch(() => ({}));
+      if (res.status === 401) throw new Error("登录已过期，请在新标签页重新登录后再导入");
+      if (!res.ok) throw new Error(data.error || "导入失败");
+      return data;
+    }
+    if (name.endsWith(".doc")) throw new Error("暂不支持旧版 .doc，请在 Word 中「另存为」.docx 后再导入");
+    throw new Error("暂不支持该格式，支持 .docx / .md / .txt / .html");
+  }
+
+  async function importFile(file: File) {
+    setImporting(true);
+    setFormError("");
+    try {
+      let { markdown, images = 0 } = await readImportFile(file);
+      if (!markdown) throw new Error("文档里没有可导入的内容");
+
+      // 标题为空时，用文档首行标题填充
+      const lead = !values.title.trim() ? splitLeadingTitle(markdown) : null;
+      if (lead) {
+        set("title", lead.title);
+        markdown = lead.body;
+      }
+
+      if (!values.content.trim()) {
+        set("content", markdown);
+      } else if (confirm("正文已有内容。\n\n「确定」：用导入的内容替换正文\n「取消」：插入到光标位置")) {
+        set("content", markdown);
+      } else {
+        insertAtCursor(markdown);
+      }
+      flash(`已导入「${file.name}」${images ? `（${images} 张图片暂不支持导入，已跳过）` : ""}`);
+    } catch (err) {
+      setFormError(err instanceof Error ? err.message : "导入失败");
+    } finally {
+      setImporting(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
   }
 
   async function save(publish: boolean) {
@@ -202,8 +316,44 @@ export default function ReportEditor({ id, initial, initialPublished = false }: 
           </div>
 
           <div className="mt-4 flex min-h-0 flex-1 flex-col">
+            <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-3">
+                <label htmlFor="content" className="field-label !mb-0">正文 · Markdown</label>
+                <label
+                  className="flex cursor-pointer select-none items-center gap-1.5 text-xs font-semibold text-muted"
+                  title="从语雀、飞书、Word、网页复制的内容，粘贴时保留链接、加粗、列表等格式。Cmd/Ctrl + Shift + V 可粘贴纯文本"
+                >
+                  <input
+                    type="checkbox"
+                    checked={keepFormat}
+                    onChange={(e) => toggleKeepFormat(e.target.checked)}
+                    className="h-3.5 w-3.5 accent-[rgb(var(--primary))]"
+                  />
+                  粘贴保留格式
+                </label>
+              </div>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={importing}
+                className="btn-sky !rounded-lg !px-2.5 !py-1 !text-xs"
+                title="支持 .docx / .md / .txt / .html"
+              >
+                {importing ? "导入中…" : "导入文档"}
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept={IMPORT_ACCEPT}
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) importFile(file);
+                }}
+              />
+            </div>
             <div className="mb-1.5 flex flex-wrap items-center justify-between gap-2">
-              <label htmlFor="content" className="field-label !mb-0">正文 · Markdown</label>
+              <p className="text-[11px] font-semibold text-primary">{hint}</p>
               <div className="flex flex-wrap gap-1">
                 {SNIPPETS.map((s) => (
                   <button
@@ -223,6 +373,7 @@ export default function ReportEditor({ id, initial, initialPublished = false }: 
               ref={textareaRef}
               value={values.content}
               onChange={(e) => set("content", e.target.value)}
+              onPaste={onPaste}
               spellCheck={false}
               className={`field min-h-[420px] flex-1 resize-none font-mono !leading-7 lg:min-h-0 ${
                 errors.content ? "!border-danger/60" : ""
