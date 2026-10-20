@@ -1,0 +1,23 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Report {
+  id        Int      @id @default(autoincrement())
+  title     String
+  /// 日报日期，格式 YYYY-MM-DD，一天一篇
+  date      String   @unique
+  summary   String?
+  /// 正文，Markdown
+  content   String
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([published, date])
+}
