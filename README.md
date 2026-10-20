@@ -102,6 +102,11 @@ src/
 
 配色统一定义在 `src/app/globals.css` 的 `:root` CSS 变量中，`tailwind.config.ts` 引用这些变量。要换主题，只需改这一处。
 
+## 部署上线
+
+- **读者在国内**：部署到国内云服务器（阿里云 / 腾讯云），详见 **[DEPLOY.md](./DEPLOY.md)**。数据库继续用 SQLite，有一键部署脚本。
+- **读者能访问海外网站**：也可以部署到 Vercel，见下文。注意 `vercel.app` 域名在国内经常打不开。
+
 ## 部署到 Vercel（SQLite 换成 Postgres）
 
 Vercel 的文件系统是只读、临时的，SQLite 无法持久化写入，上线前需要换成 Postgres。Vercel 控制台的 Storage 里提供 Postgres（由 Neon 等服务商提供）。

@@ -1,9 +1,30 @@
 import Markdown from "@/components/shared/Markdown";
 import ReportHeader, { DailyBadge } from "@/components/shared/ReportHeader";
 import type { Report, ReportListEntry } from "@/lib/reports";
+import { SITE_NAME } from "@/lib/site";
 import BackHomeButton from "./BackHomeButton";
 import MobileReportPicker from "./MobileReportPicker";
 import Sidebar from "./Sidebar";
+
+/** 页脚：配置了 ICP_NUMBER（中国内地服务器备案号）时按规定展示并链接到工信部备案系统 */
+function SiteFooter() {
+  const icp = process.env.ICP_NUMBER;
+  return (
+    <footer className="mt-8 text-center text-xs font-semibold text-muted">
+      <p>
+        © {new Date().getFullYear()} {SITE_NAME}
+        {icp && (
+          <>
+            <span className="mx-2">·</span>
+            <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" className="hover:text-ink">
+              {icp}
+            </a>
+          </>
+        )}
+      </p>
+    </footer>
+  );
+}
 
 /** 对客阅读端整体布局：左侧日报列表 + 右侧正文 */
 export default function ReaderView({ reports, report }: { reports: ReportListEntry[]; report: Report | null }) {
@@ -37,6 +58,8 @@ export default function ReaderView({ reports, report }: { reports: ReportListEnt
             <div className="px-6 py-24 text-center font-bold text-muted">还没有发布任何日报，敬请期待。</div>
           )}
         </article>
+
+        <SiteFooter />
       </main>
     </div>
   );

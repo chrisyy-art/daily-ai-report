@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { createSessionToken, SESSION_COOKIE, SESSION_MAX_AGE, verifyPassword } from "@/lib/auth";
 
+function isHttps(req: Request) {
+  const forwarded = req.headers.get("x-forwarded-proto")?.split(",")[0]?.trim();
+  return (forwarded ?? new URL(req.url).protocol.replace(":", "")) === "https";
+}
+
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
   const password = typeof body?.password === "string" ? body.password : "";
@@ -19,7 +24,9 @@ export async function POST(req: Request) {
   res.cookies.set(SESSION_COOKIE, await createSessionToken(), {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    // 只在 HTTPS 访问时加 Secure：服务器刚部署、还在用 http://IP 访问时也能正常登录。
+    // 经 Nginx 反向代理时，靠它转发的 X-Forwarded-Proto 判断原始协议。
+    secure: isHttps(req),
     path: "/",
     maxAge: SESSION_MAX_AGE,
   });
