@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono } from "next/font/google";
+import { Nunito } from "next/font/google";
 import "./globals.css";
 
-const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
+// 西文与数字用圆润的 Nunito，中文回落到 PingFang SC / 微软雅黑
+const sans = Nunito({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800", "900"], variable: "--font-sans", display: "swap" });
 
 export const metadata: Metadata = {
   title: "每日 AI",
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="zh-CN" className={mono.variable}>
+    <html lang="zh-CN" className={sans.variable}>
       <body>{children}</body>
     </html>
   );

@@ -47,7 +47,7 @@ export default function ReportActions({
   return (
     <>
       {published && (
-        <Link href={`/report/${date}`} target="_blank" className="btn-ghost hidden !px-3 !py-1.5 !text-xs md:inline-flex">
+        <Link href={`/report/${date}`} target="_blank" className="btn-ghost hidden !px-3 !py-1 !text-xs md:inline-flex">
           查看
         </Link>
       )}
@@ -55,18 +55,14 @@ export default function ReportActions({
         type="button"
         onClick={togglePublish}
         disabled={busy}
-        className={`btn !px-3 !py-1.5 !text-xs border ${
-          published
-            ? "border-line/20 text-muted hover:border-line/40 hover:text-fg"
-            : "border-success/40 text-success hover:bg-success/10"
-        }`}
+        className={`!px-3 !py-1 !text-xs ${published ? "btn-ghost !text-muted" : "btn-sky"}`}
       >
         {published ? "撤回" : "发布"}
       </button>
-      <Link href={`/admin/edit/${id}`} className="btn-ghost !px-3 !py-1.5 !text-xs">
+      <Link href={`/admin/edit/${id}`} className="btn-ghost !px-3 !py-1 !text-xs">
         编辑
       </Link>
-      <button type="button" onClick={remove} disabled={busy} className="btn-danger !px-3 !py-1.5 !text-xs">
+      <button type="button" onClick={remove} disabled={busy} className="btn-danger !px-3 !py-1 !text-xs">
         删除
       </button>
     </>

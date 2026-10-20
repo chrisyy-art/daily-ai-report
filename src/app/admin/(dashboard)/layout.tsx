@@ -14,7 +14,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <div className="min-h-screen">
-      <header className="sticky top-0 z-30 border-b border-line/15 bg-bg/70 backdrop-blur-xl">
+      <header className="sticky top-0 z-30 border-b-[3px] border-ink bg-surface">
         <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4 px-4 py-3 lg:px-6">
           <Link href="/admin">
             <Logo label="每日 AI 后台" />

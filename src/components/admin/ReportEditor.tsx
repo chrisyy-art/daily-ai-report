@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Markdown from "@/components/shared/Markdown";
-import ReportHeader from "@/components/shared/ReportHeader";
+import ReportHeader, { DailyBadge } from "@/components/shared/ReportHeader";
 import type { FieldErrors } from "@/lib/validation";
 
 export type EditorValues = {
@@ -124,18 +124,14 @@ export default function ReportEditor({ id, initial, initialPublished = false }: 
           <Link href="/admin" className="btn-ghost !px-3 !py-1.5">
             ← 返回列表
           </Link>
-          <span
-            className={`inline-flex items-center gap-1.5 font-mono text-xs ${
-              published ? "text-success" : "text-muted"
-            }`}
-          >
-            <span className={`h-1.5 w-1.5 rounded-full ${published ? "bg-success" : "bg-muted"}`} />
+          <span className={`chip ${published ? "bg-sky-soft text-ink" : "bg-surface text-muted"}`}>
+            <span className={`h-1.5 w-1.5 rounded-full ${published ? "bg-success" : "bg-muted/60"}`} />
             {id ? (published ? "已发布" : "草稿") : "新建"}
-            {dirty && <span className="text-cyan">· 有未保存修改</span>}
           </span>
+          {dirty && <span className="text-xs font-bold text-primary">有未保存修改</span>}
         </div>
         <div className="flex items-center gap-2">
-          {notice && !dirty && <span className="font-mono text-xs text-success">{notice}</span>}
+          {notice && !dirty && <span className="text-xs font-bold text-success">{notice}</span>}
           <button type="button" onClick={() => save(false)} disabled={!!saving} className="btn-ghost">
             {saving === "draft" ? "保存中…" : published ? "撤回为草稿" : "存草稿"}
           </button>
@@ -146,18 +142,18 @@ export default function ReportEditor({ id, initial, initialPublished = false }: 
       </div>
 
       {formError && (
-        <p className="rounded-xl border border-danger/30 bg-danger/10 px-4 py-2.5 text-sm text-danger">{formError}</p>
+        <p className="rounded-xl border-2 border-danger bg-danger/5 px-4 py-2.5 text-sm font-semibold text-danger">{formError}</p>
       )}
 
       {/* 移动端：编辑 / 预览切换 */}
-      <div className="flex rounded-xl border border-line/15 p-1 lg:hidden">
+      <div className="flex rounded-xl border-2 border-ink bg-surface p-1 lg:hidden">
         {(["edit", "preview"] as const).map((tab) => (
           <button
             key={tab}
             type="button"
             onClick={() => setMobileTab(tab)}
-            className={`flex-1 rounded-lg py-1.5 text-sm transition ${
-              mobileTab === tab ? "bg-cyan/15 text-cyan" : "text-muted"
+            className={`flex-1 rounded-lg py-1.5 text-sm font-bold transition ${
+              mobileTab === tab ? "bg-sky-soft text-ink" : "text-muted"
             }`}
           >
             {tab === "edit" ? "编辑" : "预览"}
@@ -167,7 +163,7 @@ export default function ReportEditor({ id, initial, initialPublished = false }: 
 
       <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-2">
         {/* 左：表单 + Markdown 编辑 */}
-        <section className={`glass min-h-0 flex-col p-4 md:p-5 ${mobileTab === "edit" ? "flex" : "hidden"} lg:flex`}>
+        <section className={`card !rounded-3xl min-h-0 flex-col p-4 md:p-5 ${mobileTab === "edit" ? "flex" : "hidden"} lg:flex`}>
           <div className="grid gap-4 sm:grid-cols-[180px_1fr]">
             <div>
               <label htmlFor="date" className="field-label">日期</label>
@@ -176,7 +172,7 @@ export default function ReportEditor({ id, initial, initialPublished = false }: 
                 type="date"
                 value={values.date}
                 onChange={(e) => set("date", e.target.value)}
-                className={`field font-mono ${errors.date ? "!border-danger/60" : ""}`}
+                className={`field font-semibold ${errors.date ? "!border-danger/60" : ""}`}
               />
               {errors.date && <p className="field-error">{errors.date}</p>}
             </div>
@@ -215,7 +211,7 @@ export default function ReportEditor({ id, initial, initialPublished = false }: 
                     type="button"
                     title={s.title}
                     onClick={() => insertSnippet(s)}
-                    className="rounded-md border border-line/15 px-2 py-0.5 text-xs text-muted transition hover:border-cyan/50 hover:text-cyan"
+                    className="rounded-lg border-2 border-ink/20 bg-surface px-2 py-0.5 text-xs font-bold text-ink/70 transition hover:border-ink hover:bg-sky-soft hover:text-ink"
                   >
                     {s.label}
                   </button>
@@ -239,13 +235,16 @@ export default function ReportEditor({ id, initial, initialPublished = false }: 
 
         {/* 右：实时预览，复用对客端渲染组件 */}
         <section
-          className={`glass min-h-0 overflow-y-auto ${mobileTab === "preview" ? "block" : "hidden"} lg:block`}
+          className={`card !rounded-3xl min-h-0 overflow-y-auto ${mobileTab === "preview" ? "block" : "hidden"} lg:block`}
           aria-label="预览"
         >
-          <div className="sticky top-0 z-10 border-b border-line/15 bg-bg/80 px-5 py-2 font-mono text-[11px] tracking-widest text-muted backdrop-blur">
+          <div className="sticky top-0 z-10 border-b-2 border-dashed border-ink/15 bg-surface/95 px-5 py-2 text-[11px] font-black tracking-[0.3em] text-primary backdrop-blur">
             PREVIEW
           </div>
-          <div className="border-b border-line/15 px-5 py-8 md:px-8">
+          <div className="border-b-[3px] border-ink px-5 py-8 md:px-8">
+            <div className="mb-6 text-center">
+              <DailyBadge />
+            </div>
             <ReportHeader title={values.title} date={values.date} />
           </div>
           <div className="px-5 py-8 md:px-8">

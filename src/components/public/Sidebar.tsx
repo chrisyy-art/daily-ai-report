@@ -6,14 +6,14 @@ import type { ReportListEntry } from "@/lib/reports";
 /** 桌面端固定侧栏 */
 export default function Sidebar({ reports, activeId }: { reports: ReportListEntry[]; activeId?: number }) {
   return (
-    <aside className="glass sticky top-6 hidden h-[calc(100vh-3rem)] w-[340px] shrink-0 flex-col overflow-hidden lg:flex">
-      <div className="px-6 pb-5 pt-6">
+    <aside className="card sticky top-8 hidden h-[calc(100vh-4rem)] w-[340px] shrink-0 flex-col overflow-hidden lg:flex">
+      <div className="px-7 pb-5 pt-7">
         <Link href="/">
           <Logo />
         </Link>
       </div>
-      <div className="mx-6 border-t border-dashed border-line/20" />
-      <nav className="flex-1 overflow-y-auto px-4 py-4 [scrollbar-width:thin]" aria-label="日报列表">
+      <div className="mx-7 border-t-2 border-dashed border-ink/15" />
+      <nav className="flex-1 overflow-y-auto px-5 pb-6 pr-6 pt-5 [scrollbar-width:thin]" aria-label="日报列表">
         <ReportList reports={reports} activeId={activeId} hrefFor={(r) => `/report/${r.date}`} />
       </nav>
     </aside>

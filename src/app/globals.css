@@ -4,16 +4,19 @@
 
 /* ===== 主题变量（RGB 三元组，便于 Tailwind 叠加透明度）===== */
 :root {
-  --bg: 10 14 26;          /* #0A0E1A 深空底 */
-  --surface: 255 255 255;  /* 配合低透明度做玻璃卡片 */
-  --line: 148 163 184;     /* #94A3B8 描边 */
-  --fg: 226 232 240;       /* #E2E8F0 正文 */
-  --muted: 148 163 184;    /* #94A3B8 次要文字 */
-  --cyan: 34 211 238;      /* #22D3EE 主色 */
-  --violet: 139 92 246;    /* #8B5CF6 辅色 */
-  --danger: 248 113 113;
-  --success: 52 211 153;
-  color-scheme: dark;
+  --bg: 246 249 253;        /* #F6F9FD 页面底色：带一点蓝的白 */
+  --surface: 255 255 255;   /* 卡片白 */
+  --ink: 27 35 64;          /* #1B2340 描边、阴影、标题 */
+  --fg: 38 48 72;           /* 正文 */
+  --muted: 110 122 148;     /* 次要文字 */
+  --soft: 243 246 251;      /* 列表项底色 */
+  --primary: 76 92 240;     /* #4C5CF0 主色：序号、DAILY AI、主按钮 */
+  --sky: 125 211 252;       /* #7DD3FC 浅蓝：Logo、标题装饰 */
+  --sky-soft: 233 245 255;  /* #E9F5FF 浅蓝底：选中项、摘要框 */
+  --link: 37 117 235;       /* 链接蓝 */
+  --danger: 225 54 64;
+  --success: 22 163 98;
+  color-scheme: light;
 }
 
 @layer base {
@@ -24,63 +27,66 @@
 
   body {
     min-height: 100vh;
-    /* 淡网格 + 左上紫色光晕 + 右下青色光晕 */
-    background-image:
-      radial-gradient(60rem 40rem at -10% -10%, rgb(var(--violet) / 0.18), transparent 60%),
-      radial-gradient(50rem 36rem at 110% 110%, rgb(var(--cyan) / 0.10), transparent 60%),
-      linear-gradient(rgb(var(--line) / 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(var(--line) / 0.05) 1px, transparent 1px);
-    background-size: auto, auto, 32px 32px, 32px 32px;
+    /* 淡淡的蓝色点阵，增加一点科技感 */
+    background-image: radial-gradient(rgb(var(--primary) / 0.09) 1px, transparent 1px);
+    background-size: 22px 22px;
     background-attachment: fixed;
   }
 
   ::selection {
-    background: rgb(var(--cyan) / 0.3);
+    background: rgb(var(--sky) / 0.5);
   }
 }
 
 @layer components {
-  /* 玻璃卡片 */
-  .glass {
-    @apply rounded-2xl border border-line/15 bg-surface/[0.04] backdrop-blur-xl;
+  /* 粗描边 + 偏移阴影的大圆角卡片 */
+  .card {
+    @apply rounded-[28px] border-[3px] border-ink bg-surface shadow-brutal-md md:shadow-brutal;
   }
 
-  .text-gradient {
-    @apply bg-brand bg-clip-text text-transparent;
-  }
-
-  /* 按钮 */
+  /* 按钮：按下时阴影收起，有"按下去"的手感 */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-medium
-      transition disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border-2 border-ink px-4 py-2 text-sm font-bold
+      shadow-brutal-sm transition
+      hover:-translate-x-px hover:-translate-y-px hover:shadow-[4px_4px_0_0_rgb(var(--ink))]
+      active:translate-x-[3px] active:translate-y-[3px] active:shadow-none
+      disabled:pointer-events-none disabled:opacity-50;
   }
   .btn-primary {
-    @apply btn bg-brand text-bg shadow-glow-violet hover:brightness-110;
+    @apply btn bg-primary text-white;
   }
   .btn-ghost {
-    @apply btn border border-line/20 bg-surface/[0.04] text-fg hover:border-cyan/60 hover:text-cyan;
+    @apply btn bg-surface text-ink;
+  }
+  .btn-sky {
+    @apply btn bg-sky-soft text-ink;
   }
   .btn-danger {
-    @apply btn border border-danger/30 text-danger hover:bg-danger/10;
+    @apply btn bg-surface text-danger;
   }
 
   /* 表单 */
   .field {
-    @apply w-full rounded-xl border border-line/20 bg-bg/60 px-3 py-2 text-sm text-fg
-      placeholder:text-muted/60 outline-none transition
-      focus:border-cyan/70 focus:shadow-glow;
+    @apply w-full rounded-xl border-2 border-ink/80 bg-surface px-3 py-2 text-sm text-fg
+      placeholder:text-muted/70 outline-none transition
+      focus:border-ink focus:shadow-[3px_3px_0_0_rgb(var(--primary))];
   }
   .field-label {
-    @apply mb-1.5 block font-mono text-xs uppercase tracking-wider text-muted;
+    @apply mb-1.5 block text-xs font-bold text-ink/70;
   }
   .field-error {
-    @apply mt-1.5 text-xs text-danger;
+    @apply mt-1.5 text-xs font-medium text-danger;
+  }
+
+  /* 状态小标签 */
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border-2 border-ink px-2.5 py-0.5 text-xs font-bold;
   }
 }
 
 /* ===== Markdown 正文 ===== */
 .md-body {
-  @apply text-[15px] leading-8 text-fg/90 md:text-base md:leading-9;
+  @apply text-[15px] leading-8 text-fg md:text-[17px] md:leading-9;
   word-break: break-word;
 }
 .md-body > * + * {
@@ -90,57 +96,46 @@
 .md-body h2,
 .md-body h3,
 .md-body h4 {
-  @apply font-semibold text-fg;
+  @apply font-extrabold text-ink;
 }
 .md-body h1 { @apply mt-10 text-2xl; }
-.md-body h2 {
-  @apply mt-12 border-b border-line/15 pb-2 text-xl;
-}
+.md-body h2 { @apply mt-12 text-xl; }
 .md-body h2::before {
   content: "";
-  @apply mr-2 inline-block h-4 w-1 rounded-full bg-brand align-[-2px];
+  @apply mr-2.5 inline-block h-5 w-2 rounded-full border-2 border-ink bg-sky align-[-3px];
 }
 .md-body h3 { @apply mt-8 text-lg; }
-.md-body strong { @apply font-semibold text-fg; }
+.md-body strong { @apply font-bold text-ink; }
 .md-body a {
-  @apply text-cyan underline decoration-cyan/30 underline-offset-4 transition hover:decoration-cyan;
+  @apply font-medium text-link no-underline transition hover:underline hover:underline-offset-4;
 }
 .md-body blockquote {
-  @apply border-l-2 border-line/30 pl-4 text-muted;
+  @apply border-l-[3px] border-ink/15 pl-4 text-muted;
 }
 .md-body ul { @apply list-disc pl-6; }
 .md-body ol { @apply list-decimal pl-6; }
 .md-body li + li { @apply mt-1.5; }
-.md-body li::marker { @apply text-cyan/70; }
-.md-body hr { @apply my-10 border-line/15; }
-.md-body img { @apply rounded-xl border border-line/15; }
+.md-body li::marker { @apply text-primary; }
+.md-body hr { @apply my-10 border-t-2 border-dashed border-ink/15; }
+.md-body img { @apply rounded-2xl border-2 border-ink; }
 .md-body code {
-  @apply rounded-md bg-surface/[0.08] px-1.5 py-0.5 font-mono text-[0.88em] text-cyan;
+  @apply rounded-md bg-soft px-1.5 py-0.5 font-mono text-[0.88em] text-primary;
 }
 .md-body pre {
-  @apply overflow-x-auto rounded-xl border border-line/15 bg-black/40 p-4 text-sm leading-6;
+  @apply overflow-x-auto rounded-2xl border-2 border-ink bg-ink p-4 text-sm leading-6;
 }
-.md-body pre code { @apply bg-transparent p-0 text-fg/90; }
+.md-body pre code { @apply bg-transparent p-0 text-white/90; }
 .md-body table { @apply block w-full overflow-x-auto text-sm; }
-.md-body th, .md-body td { @apply border border-line/15 px-3 py-2 text-left; }
-.md-body th { @apply bg-surface/[0.05]; }
+.md-body th, .md-body td { @apply border-2 border-ink/15 px-3 py-2 text-left; }
+.md-body th { @apply bg-soft font-bold text-ink; }
 
-/* :::summary 重点摘要框 */
+/* :::summary 重点摘要框：浅蓝底圆角卡片 */
 .md-summary {
-  @apply relative overflow-hidden rounded-xl border border-cyan/15 py-4 pl-6 pr-5 text-fg/85;
-  background: linear-gradient(135deg, rgb(var(--cyan) / 0.07), rgb(var(--violet) / 0.05));
-}
-.md-summary::before {
-  content: "";
-  @apply absolute inset-y-0 left-0 w-[3px];
-  background: linear-gradient(180deg, rgb(var(--cyan)), rgb(var(--violet)));
+  @apply rounded-2xl bg-sky-soft px-5 py-4 text-fg md:px-6 md:py-5;
 }
 .md-summary > * + * { @apply mt-3; }
 
-/* "消息来源" "体验地址" 胶囊链接 */
+/* "消息来源" "体验地址"：蓝色文字链接 */
 .md-body a.md-tag-link {
-  @apply mx-0.5 inline-flex items-center gap-0.5 rounded-full border border-cyan/30 bg-cyan/10
-    px-2.5 py-0 align-[1px] text-[0.8em] font-medium leading-6 text-cyan no-underline transition
-    hover:border-cyan/70 hover:bg-cyan/15 hover:shadow-glow;
+  @apply ml-1.5 whitespace-nowrap font-medium text-link;
 }
-.md-tag-icon { @apply h-3 w-3; }

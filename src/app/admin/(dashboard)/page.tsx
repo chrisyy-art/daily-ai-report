@@ -8,11 +8,11 @@ export default async function AdminHomePage() {
   const publishedCount = reports.filter((r) => r.published).length;
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="mx-auto max-w-4xl py-2">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">日报管理</h1>
-          <p className="mt-1 font-mono text-xs text-muted">
+          <h1 className="text-3xl font-black text-ink">日报管理</h1>
+          <p className="mt-1.5 text-sm font-semibold text-muted">
             共 {reports.length} 篇 · 已发布 {publishedCount} · 草稿 {reports.length - publishedCount}
           </p>
         </div>
@@ -21,7 +21,7 @@ export default async function AdminHomePage() {
         </Link>
       </div>
 
-      <div className="glass p-3 md:p-4">
+      <div className="card p-4 md:p-5">
         <ReportList
           reports={reports}
           showStatus

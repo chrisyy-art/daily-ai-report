@@ -3,7 +3,7 @@ import remarkGfm from "remark-gfm";
 import remarkDirective from "remark-directive";
 import remarkSummary from "@/lib/markdown/remark-summary";
 
-// 文字等于这些值的链接渲染成胶囊标签
+// 文字等于这些值的链接使用专门的样式（紧跟正文的蓝色链接）
 const TAG_LINKS = new Set(["消息来源", "体验地址"]);
 
 function textOf(children: React.ReactNode): string {
@@ -24,11 +24,6 @@ const components: Components = {
         {...rest}
       >
         {children}
-        {isTag && (
-          <svg aria-hidden viewBox="0 0 16 16" className="md-tag-icon">
-            <path d="M5 11 11 5M6 5h5v5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        )}
       </a>
     );
   },
