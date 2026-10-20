@@ -16,9 +16,14 @@ export default async function AdminHomePage() {
             共 {reports.length} 篇 · 已发布 {publishedCount} · 草稿 {reports.length - publishedCount}
           </p>
         </div>
-        <Link href="/admin/new" className="btn-primary">
-          + 新建日报
-        </Link>
+        <div className="flex flex-wrap gap-3">
+          <Link href="/admin/new" className="btn-sky" title="进入新建页后，上传 HTML / Word / Markdown 文件">
+            上传文档新建
+          </Link>
+          <Link href="/admin/new" className="btn-primary">
+            + 新建日报
+          </Link>
+        </div>
       </div>
 
       <div className="card p-4 md:p-5">

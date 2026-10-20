@@ -64,6 +64,7 @@ export default function ReportEditor({ id, initial, initialPublished = false }: 
   const [mobileTab, setMobileTab] = useState<"edit" | "preview">("edit");
   const [keepFormat, setKeepFormat] = useState(true);
   const [importing, setImporting] = useState(false);
+  const [dragging, setDragging] = useState(false);
   const [hint, setHint] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -278,7 +279,29 @@ export default function ReportEditor({ id, initial, initialPublished = false }: 
 
       <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-2">
         {/* 左：表单 + Markdown 编辑 */}
-        <section className={`card !rounded-3xl min-h-0 flex-col p-4 md:p-5 ${mobileTab === "edit" ? "flex" : "hidden"} lg:flex`}>
+        <section
+          className={`card !rounded-3xl relative min-h-0 flex-col p-4 md:p-5 ${mobileTab === "edit" ? "flex" : "hidden"} lg:flex`}
+          onDragOver={(e) => {
+            if (!e.dataTransfer.types.includes("Files")) return;
+            e.preventDefault();
+            setDragging(true);
+          }}
+          onDragLeave={(e) => {
+            if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragging(false);
+          }}
+          onDrop={(e) => {
+            const file = e.dataTransfer.files?.[0];
+            if (!file) return;
+            e.preventDefault();
+            setDragging(false);
+            importFile(file);
+          }}
+        >
+          {dragging && (
+            <div className="pointer-events-none absolute inset-2 z-20 grid place-items-center rounded-[20px] border-[3px] border-dashed border-primary bg-sky-soft/90">
+              <p className="text-lg font-black text-primary">松开鼠标，导入这个文档</p>
+            </div>
+          )}
           <div className="grid gap-4 sm:grid-cols-[180px_1fr]">
             <div>
               <label htmlFor="date" className="field-label">日期</label>
@@ -340,7 +363,7 @@ export default function ReportEditor({ id, initial, initialPublished = false }: 
                 className="btn-sky !rounded-lg !px-2.5 !py-1 !text-xs"
                 title="支持 .docx / .md / .txt / .html"
               >
-                {importing ? "导入中…" : "导入文档"}
+                {importing ? "导入中…" : "上传 HTML / Word"}
               </button>
               <input
                 ref={fileInputRef}
@@ -369,6 +392,22 @@ export default function ReportEditor({ id, initial, initialPublished = false }: 
                 ))}
               </div>
             </div>
+            {!values.content.trim() && (
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={importing}
+                className="mb-3 flex w-full flex-col items-center gap-1.5 rounded-2xl border-[3px] border-dashed border-ink/25 bg-sky-soft/60 px-4 py-6 text-center transition hover:border-primary hover:bg-sky-soft disabled:opacity-60"
+              >
+                <svg viewBox="0 0 24 24" className="h-7 w-7 text-primary" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 16V4m0 0-4.5 4.5M12 4l4.5 4.5M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
+                </svg>
+                <span className="text-sm font-black text-ink">{importing ? "正在导入…" : "点击上传，或把文件拖到这里"}</span>
+                <span className="text-xs font-semibold text-muted">
+                  支持 HTML（.html）、Word（.docx）、Markdown（.md）、纯文本（.txt），链接与加粗会保留
+                </span>
+              </button>
+            )}
             <textarea
               id="content"
               ref={textareaRef}
