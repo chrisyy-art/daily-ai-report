@@ -16,11 +16,19 @@ export type EditorValues = {
   content: string;
 };
 
+type SavedKind = "draft" | "publish";
+
+type Notice = { kind: SavedKind; time: string };
+
+const nowTime = () => new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" });
+
 type Props = {
   /** 编辑已有日报时传入 */
   id?: number;
   initial: EditorValues;
   initialPublished?: boolean;
+  /** 新建保存后跳转到编辑页时带过来，用于继续显示保存结果 */
+  initialNotice?: SavedKind;
 };
 
 // 工具栏片段：before / after 包裹选区，placeholder 为无选区时的默认文字
@@ -50,7 +58,7 @@ function splitLeadingTitle(md: string) {
   return m ? { title: m[1].replace(/\*\*/g, "").trim(), body: md.slice(m[0].length) } : null;
 }
 
-export default function ReportEditor({ id, initial, initialPublished = false }: Props) {
+export default function ReportEditor({ id, initial, initialPublished = false, initialNotice }: Props) {
   const router = useRouter();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -60,7 +68,12 @@ export default function ReportEditor({ id, initial, initialPublished = false }: 
   const [errors, setErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState("");
   const [saving, setSaving] = useState<null | "draft" | "publish">(null);
-  const [notice, setNotice] = useState("");
+  const [notice, setNotice] = useState<Notice | null>(initialNotice ? { kind: initialNotice, time: nowTime() } : null);
+
+  // 提示已显示，去掉地址栏里的 ?saved=，刷新页面时不再重复提示
+  useEffect(() => {
+    if (initialNotice) window.history.replaceState(null, "", window.location.pathname);
+  }, [initialNotice]);
   const [mobileTab, setMobileTab] = useState<"edit" | "preview">("edit");
   const [keepFormat, setKeepFormat] = useState(true);
   const [importing, setImporting] = useState(false);
@@ -197,7 +210,7 @@ export default function ReportEditor({ id, initial, initialPublished = false }: 
   async function save(publish: boolean) {
     setSaving(publish ? "publish" : "draft");
     setFormError("");
-    setNotice("");
+    setNotice(null);
     try {
       const res = await fetch(id ? `/api/admin/reports/${id}` : "/api/admin/reports", {
         method: id ? "PUT" : "POST",
@@ -218,11 +231,12 @@ export default function ReportEditor({ id, initial, initialPublished = false }: 
       setSaved(values);
       setPublished(publish);
       setErrors({});
-      const time = new Date().toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" });
-      setNotice(`${publish ? "已发布" : "草稿已保存"} · ${time}`);
+      const kind: SavedKind = publish ? "publish" : "draft";
+      setNotice({ kind, time: nowTime() });
 
       if (!id) {
-        router.replace(`/admin/edit/${data.report.id}`);
+        // 新建的日报保存后进入它的编辑页，继续显示保存结果
+        router.replace(`/admin/edit/${data.report.id}?saved=${kind}`);
       }
       router.refresh();
     } catch {
@@ -247,7 +261,6 @@ export default function ReportEditor({ id, initial, initialPublished = false }: 
           {dirty && <span className="text-xs font-bold text-primary">有未保存修改</span>}
         </div>
         <div className="flex items-center gap-2">
-          {notice && !dirty && <span className="text-xs font-bold text-success">{notice}</span>}
           <button type="button" onClick={() => save(false)} disabled={!!saving} className="btn-ghost">
             {saving === "draft" ? "保存中…" : published ? "撤回为草稿" : "存草稿"}
           </button>
@@ -256,6 +269,26 @@ export default function ReportEditor({ id, initial, initialPublished = false }: 
           </button>
         </div>
       </div>
+
+      {notice && !dirty && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border-2 border-success bg-success/5 px-4 py-2.5 text-sm font-semibold text-success">
+          <span>
+            {notice.kind === "draft"
+              ? "✓ 草稿已保存。草稿只在后台可见，前台读者看不到；可在日报列表的「草稿」中找到，需要公开时点「发布」。"
+              : "✓ 已发布，前台读者现在可以看到这篇日报。"}
+            <span className="ml-2 text-xs text-success/70">{notice.time}</span>
+          </span>
+          {notice.kind === "draft" ? (
+            <Link href="/admin?status=draft" className="btn-ghost !px-3 !py-1 !text-xs">
+              查看草稿列表
+            </Link>
+          ) : (
+            <Link href={`/report/${saved.date}`} target="_blank" className="btn-ghost !px-3 !py-1 !text-xs">
+              查看前台 ↗
+            </Link>
+          )}
+        </div>
+      )}
 
       {formError && (
         <p className="rounded-xl border-2 border-danger bg-danger/5 px-4 py-2.5 text-sm font-semibold text-danger">{formError}</p>
