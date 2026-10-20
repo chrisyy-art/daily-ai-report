@@ -9,6 +9,13 @@ import { strikethrough, taskListItems } from "turndown-plugin-gfm";
 const BOLD_WEIGHT = /font-weight\s*:\s*(bold|bolder|[6-9]00)/i;
 const NORMAL_WEIGHT = /font-weight\s*:\s*(normal|[1-4]00)/i;
 
+// 这些元素有各自的转换规则，加粗样式不在它们身上处理
+const STRUCTURAL_TAGS = new Set([
+  "A", "B", "STRONG", "H1", "H2", "H3", "H4", "H5", "H6",
+  "UL", "OL", "LI", "TABLE", "THEAD", "TBODY", "TR", "TH", "TD", "PRE", "CODE", "BLOCKQUOTE", "IMG",
+]);
+const BLOCK_TAGS = new Set(["P", "DIV", "SECTION", "ARTICLE", "HEADER", "MAIN", "DD", "DT", "FIGURE", "FIGCAPTION"]);
+
 const styleOf = (node: Node) => ((node as HTMLElement).getAttribute?.("style") ?? "");
 
 /** 单元格内容不能换行，也不能有未转义的竖线 */
@@ -32,10 +39,16 @@ function createService() {
     replacement: (content) => content,
   });
 
-  // 很多编辑器用 <span style="font-weight:700"> 表示加粗
+  // 很多编辑器 / 导出页面用 style="font-weight:700" 表示加粗（span、p、div 都有）
   service.addRule("styledBold", {
-    filter: (node) => node.nodeName === "SPAN" && BOLD_WEIGHT.test(styleOf(node)),
-    replacement: (content) => (content.trim() ? `**${content}**` : content),
+    filter: (node) => !STRUCTURAL_TAGS.has(node.nodeName) && BOLD_WEIGHT.test(styleOf(node)),
+    replacement: (content, node) => {
+      const inner = content.replace(/\*\*/g, "").trim(); // 去掉内部重复的加粗标记
+      const block = BLOCK_TAGS.has(node.nodeName);
+      // 跨段落的内容不能整体加粗，保持原样
+      if (!inner || inner.includes("\n\n")) return block ? `\n\n${content}\n\n` : content;
+      return block ? `\n\n**${inner}**\n\n` : `**${inner}**`;
+    },
   });
 
   // 链接：去掉无效链接和 title，括号、空格做编码，避免破坏 Markdown 语法
@@ -46,7 +59,8 @@ function createService() {
       if (!content.trim()) return "";
       if (!href || /^(javascript|data):/i.test(href) || href.startsWith("#")) return content;
       const url = href.replace(/ /g, "%20").replace(/\(/g, "%28").replace(/\)/g, "%29");
-      return `[${content.trim()}](${url})`;
+      const link = `[${content.replace(/\*\*/g, "").trim()}](${url})`;
+      return BOLD_WEIGHT.test(styleOf(node)) ? `**${link}**` : link;
     },
   });
 

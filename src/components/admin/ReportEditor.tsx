@@ -6,6 +6,7 @@ import Link from "next/link";
 import Markdown from "@/components/shared/Markdown";
 import ReportHeader, { DailyBadge } from "@/components/shared/ReportHeader";
 import { htmlToMarkdown } from "@/lib/markdown/html-to-markdown";
+import { htmlFileToMarkdown } from "@/lib/markdown/import-html";
 import type { FieldErrors } from "@/lib/validation";
 
 export type EditorValues = {
@@ -148,7 +149,7 @@ export default function ReportEditor({ id, initial, initialPublished = false }: 
   async function readImportFile(file: File): Promise<{ markdown: string; images?: number }> {
     const name = file.name.toLowerCase();
     if (/\.(md|markdown|txt)$/.test(name)) return { markdown: (await file.text()).trim() };
-    if (/\.html?$/.test(name)) return { markdown: htmlToMarkdown(await file.text()) };
+    if (/\.html?$/.test(name)) return { markdown: await htmlFileToMarkdown(file) };
     if (name.endsWith(".docx")) {
       const body = new FormData();
       body.append("file", file);
