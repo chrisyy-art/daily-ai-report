@@ -26,7 +26,7 @@ export default function MobileReportPicker({
 
   return (
     <div className="sticky top-0 z-30 -mx-4 mb-5 bg-bg/90 px-4 pb-1 pt-3 backdrop-blur lg:hidden">
-      <div className="overflow-hidden rounded-[22px] border-[3px] border-ink bg-surface shadow-brutal-sm">
+      <div className="overflow-hidden rounded-2xl border border-line/80 bg-surface shadow-soft-sm">
         <div className="flex items-center justify-between gap-2 px-3 py-3 sm:px-4">
           <Link href="/" className="min-w-0">
             <Logo />
@@ -35,7 +35,7 @@ export default function MobileReportPicker({
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
-            className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border-2 border-ink bg-sky-soft px-3 py-1 text-sm font-extrabold text-ink"
+            className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-sky-soft px-3 py-1 text-sm font-semibold text-ink"
           >
             {active ? (
               <span>
@@ -48,13 +48,13 @@ export default function MobileReportPicker({
               <span>往期</span>
             )}
             <svg viewBox="0 0 16 16" className={`h-3.5 w-3.5 transition ${open ? "rotate-180" : ""}`} aria-hidden>
-              <path d="m4 6 4 4 4-4" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+              <path d="m4 6 4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
             </svg>
           </button>
         </div>
 
         {open && (
-          <ul className="max-h-[60vh] space-y-3 overflow-y-auto border-t-2 border-dashed border-ink/15 p-3 pr-4">
+          <ul className="max-h-[60vh] space-y-2 overflow-y-auto border-t border-line p-3">
             {reports.map((r, i) => (
               <li key={r.id}>
                 <ReportListItem report={r} index={i + 1} href={`/report/${r.date}`} active={r.id === activeId} />

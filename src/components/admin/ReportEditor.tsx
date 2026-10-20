@@ -254,7 +254,7 @@ export default function ReportEditor({ id, initial, initialPublished = false, in
           <Link href="/admin" className="btn-ghost !px-3 !py-1.5">
             ← 返回列表
           </Link>
-          <span className={`chip ${published ? "bg-sky-soft text-ink" : "bg-surface text-muted"}`}>
+          <span className={`chip ${published ? "bg-success/10 text-success" : "bg-line/70 text-muted"}`}>
             <span className={`h-1.5 w-1.5 rounded-full ${published ? "bg-success" : "bg-muted/60"}`} />
             {id ? (published ? "已发布" : "草稿") : "新建"}
           </span>
@@ -271,7 +271,7 @@ export default function ReportEditor({ id, initial, initialPublished = false, in
       </div>
 
       {notice && !dirty && (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border-2 border-success bg-success/5 px-4 py-2.5 text-sm font-semibold text-success">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-success/20 bg-success/5 px-4 py-2.5 text-sm font-medium text-success">
           <span>
             {notice.kind === "draft"
               ? "✓ 草稿已保存。草稿只在后台可见，前台读者看不到；可在日报列表的「草稿」中找到，需要公开时点「发布」。"
@@ -291,18 +291,18 @@ export default function ReportEditor({ id, initial, initialPublished = false, in
       )}
 
       {formError && (
-        <p className="rounded-xl border-2 border-danger bg-danger/5 px-4 py-2.5 text-sm font-semibold text-danger">{formError}</p>
+        <p className="rounded-2xl border border-danger/20 bg-danger/5 px-4 py-2.5 text-sm font-medium text-danger">{formError}</p>
       )}
 
       {/* 移动端：编辑 / 预览切换 */}
-      <div className="flex rounded-xl border-2 border-ink bg-surface p-1 lg:hidden">
+      <div className="flex rounded-full border border-line bg-surface p-1 lg:hidden">
         {(["edit", "preview"] as const).map((tab) => (
           <button
             key={tab}
             type="button"
             onClick={() => setMobileTab(tab)}
             className={`flex-1 rounded-lg py-1.5 text-sm font-bold transition ${
-              mobileTab === tab ? "bg-sky-soft text-ink" : "text-muted"
+              mobileTab === tab ? "bg-sky-soft text-primary" : "text-muted"
             }`}
           >
             {tab === "edit" ? "编辑" : "预览"}
@@ -331,8 +331,8 @@ export default function ReportEditor({ id, initial, initialPublished = false, in
           }}
         >
           {dragging && (
-            <div className="pointer-events-none absolute inset-2 z-20 grid place-items-center rounded-[20px] border-[3px] border-dashed border-primary bg-sky-soft/90">
-              <p className="text-lg font-black text-primary">松开鼠标，导入这个文档</p>
+            <div className="pointer-events-none absolute inset-2 z-20 grid place-items-center rounded-2xl border-2 border-dashed border-primary/50 bg-sky-soft/90 backdrop-blur-sm">
+              <p className="text-base font-semibold text-primary">松开鼠标，导入这个文档</p>
             </div>
           )}
           <div className="grid gap-4 sm:grid-cols-[180px_1fr]">
@@ -418,7 +418,7 @@ export default function ReportEditor({ id, initial, initialPublished = false, in
                     type="button"
                     title={s.title}
                     onClick={() => insertSnippet(s)}
-                    className="rounded-lg border-2 border-ink/20 bg-surface px-2 py-0.5 text-xs font-bold text-ink/70 transition hover:border-ink hover:bg-sky-soft hover:text-ink"
+                    className="rounded-full border border-line bg-surface px-2.5 py-0.5 text-xs font-medium text-muted transition hover:border-primary/30 hover:bg-sky-soft/60 hover:text-primary"
                   >
                     {s.label}
                   </button>
@@ -430,12 +430,12 @@ export default function ReportEditor({ id, initial, initialPublished = false, in
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={importing}
-                className="mb-3 flex w-full flex-col items-center gap-1.5 rounded-2xl border-[3px] border-dashed border-ink/25 bg-sky-soft/60 px-4 py-6 text-center transition hover:border-primary hover:bg-sky-soft disabled:opacity-60"
+                className="mb-3 flex w-full flex-col items-center gap-1.5 rounded-2xl border border-dashed border-primary/25 bg-gradient-to-br from-sky-soft/70 to-surface px-4 py-6 text-center transition hover:border-primary hover:bg-sky-soft disabled:opacity-60"
               >
                 <svg viewBox="0 0 24 24" className="h-7 w-7 text-primary" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 16V4m0 0-4.5 4.5M12 4l4.5 4.5M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
                 </svg>
-                <span className="text-sm font-black text-ink">{importing ? "正在导入…" : "点击上传，或把文件拖到这里"}</span>
+                <span className="text-sm font-semibold text-ink">{importing ? "正在导入…" : "点击上传，或把文件拖到这里"}</span>
                 <span className="text-xs font-semibold text-muted">
                   支持 HTML（.html）、Word（.docx）、Markdown（.md）、纯文本（.txt），链接与加粗会保留
                 </span>
@@ -462,10 +462,10 @@ export default function ReportEditor({ id, initial, initialPublished = false, in
           className={`card !rounded-3xl min-h-0 overflow-y-auto ${mobileTab === "preview" ? "block" : "hidden"} lg:block`}
           aria-label="预览"
         >
-          <div className="sticky top-0 z-10 border-b-2 border-dashed border-ink/15 bg-surface/95 px-5 py-2 text-[11px] font-black tracking-[0.3em] text-primary backdrop-blur">
+          <div className="sticky top-0 z-10 border-b border-line/80 bg-surface/90 px-5 py-2 text-[11px] font-semibold tracking-[0.3em] text-muted backdrop-blur">
             PREVIEW
           </div>
-          <div className="border-b-[3px] border-ink px-5 py-8 md:px-8">
+          <div className="tint border-b border-line/80 px-5 py-8 md:px-8">
             <div className="mb-6 text-center">
               <DailyBadge />
             </div>

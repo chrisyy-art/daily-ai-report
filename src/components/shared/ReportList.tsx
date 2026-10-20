@@ -24,7 +24,7 @@ export default function ReportList({
   }
 
   return (
-    <ul className="space-y-2.5">
+    <ul className="space-y-2">
       {reports.map((r, i) => (
         <li key={r.id}>
           <ReportListItem

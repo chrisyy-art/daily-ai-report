@@ -12,7 +12,7 @@ export default function LoginPage() {
       <div className="card w-full max-w-sm p-8">
         <div className="mb-8 flex flex-col items-center gap-3">
           <Logo label={`${SITE_NAME} 后台`} />
-          <p className="text-xs font-black tracking-[0.3em] text-primary">ADMIN CONSOLE</p>
+          <p className="text-[11px] font-semibold tracking-[0.3em] text-primary">ADMIN CONSOLE</p>
         </div>
         <Suspense>
           <LoginForm />

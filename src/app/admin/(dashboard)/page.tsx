@@ -32,7 +32,7 @@ export default async function AdminHomePage({ searchParams }: { searchParams: { 
     <div className="mx-auto max-w-4xl py-2">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-ink">日报管理</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-ink md:text-3xl">日报管理</h1>
           <p className="mt-1.5 text-sm font-semibold text-muted">草稿只在后台可见，发布后前台读者才能看到</p>
         </div>
         <Link href="/admin/new" className="btn-primary">
@@ -49,7 +49,7 @@ export default async function AdminHomePage({ searchParams }: { searchParams: { 
               href={tab.key === "all" ? "/admin" : `/admin?status=${tab.key}`}
               aria-current={active ? "page" : undefined}
               className={`chip !px-3.5 !py-1 !text-sm transition ${
-                active ? "bg-ink !text-white" : "bg-surface text-ink hover:bg-sky-soft"
+                active ? "bg-primary !text-white shadow-primary-glow" : "border border-line bg-surface text-ink hover:bg-sky-soft/60"
               }`}
             >
               {tab.label}

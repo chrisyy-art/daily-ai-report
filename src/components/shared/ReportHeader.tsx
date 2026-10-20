@@ -4,8 +4,8 @@ import { formatChineseDate } from "@/lib/date";
 /** "✦ DAILY AI" 小标识 */
 export function DailyBadge() {
   return (
-    <p className="inline-flex items-center gap-1.5 text-[13px] font-black tracking-[0.3em] text-primary">
-      <SparkIcon className="h-4 w-4" />
+    <p className="inline-flex items-center gap-1.5 rounded-full border border-primary/10 bg-surface/80 px-3 py-1 text-[11px] font-semibold tracking-[0.25em] text-primary">
+      <SparkIcon className="h-3.5 w-3.5" />
       DAILY AI
     </p>
   );
@@ -15,11 +15,11 @@ export function DailyBadge() {
 export default function ReportHeader({ title, date }: { title: string; date: string }) {
   return (
     <header className="text-center">
-      <h1 className="text-[22px] font-black leading-snug text-ink md:text-[30px] md:leading-[1.35]">
+      <h1 className="text-[22px] font-bold leading-snug tracking-tight text-ink md:text-[30px] md:leading-[1.35]">
         {title || "（未填写标题）"}
       </h1>
       {date && (
-        <p className="mt-3 text-sm font-bold text-muted">
+        <p className="mt-3 text-sm font-medium text-muted">
           <time dateTime={date}>{formatChineseDate(date)}</time>
         </p>
       )}

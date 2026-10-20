@@ -12,8 +12,8 @@ export default function Sidebar({ reports, activeId }: { reports: ReportListEntr
           <Logo />
         </Link>
       </div>
-      <div className="mx-6 border-t-2 border-dashed border-ink/15" />
-      <nav className="flex-1 overflow-y-auto px-4 pb-5 pr-5 pt-4 [scrollbar-width:thin]" aria-label="日报列表">
+      <div className="mx-6 border-t border-line" />
+      <nav className="flex-1 overflow-y-auto px-4 pb-5 pt-4 [scrollbar-width:thin]" aria-label="日报列表">
         <ReportList reports={reports} activeId={activeId} hrefFor={(r) => `/report/${r.date}`} />
       </nav>
     </aside>

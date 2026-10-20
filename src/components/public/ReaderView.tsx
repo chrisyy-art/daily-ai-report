@@ -38,7 +38,8 @@ export default function ReaderView({ reports, report }: { reports: ReportListEnt
         <article className="card overflow-hidden">
           {report ? (
             <>
-              <div className="border-b-[3px] border-ink px-5 pb-7 pt-5 md:px-8 md:pb-8 md:pt-6">
+              <div className="tint relative border-b border-line/80 px-5 pb-8 pt-5 md:px-8 md:pb-9 md:pt-6">
+                <div aria-hidden className="tint-dots pointer-events-none absolute inset-0" />
                 {/* 顶部一行：左侧返回按钮，DAILY AI 居中 */}
                 <div className="relative flex flex-col items-center gap-5 md:flex-row md:justify-center">
                   <div className="self-start md:absolute md:left-0 md:top-1/2 md:-translate-y-1/2">
@@ -46,7 +47,7 @@ export default function ReaderView({ reports, report }: { reports: ReportListEnt
                   </div>
                   <DailyBadge />
                 </div>
-                <div className="mx-auto mt-5 max-w-4xl md:mt-6">
+                <div className="relative mx-auto mt-5 max-w-4xl md:mt-6">
                   <ReportHeader title={report.title} date={report.date} />
                 </div>
               </div>
@@ -55,7 +56,7 @@ export default function ReaderView({ reports, report }: { reports: ReportListEnt
               </div>
             </>
           ) : (
-            <div className="px-6 py-24 text-center font-bold text-muted">还没有发布任何日报，敬请期待。</div>
+            <div className="px-6 py-24 text-center font-medium text-muted">还没有发布任何日报，敬请期待。</div>
           )}
         </article>
 
