@@ -41,7 +41,7 @@
 @layer components {
   /* 粗描边 + 偏移阴影的大圆角卡片 */
   .card {
-    @apply rounded-[28px] border-[3px] border-ink bg-surface shadow-brutal-md md:shadow-brutal;
+    @apply rounded-3xl border-[3px] border-ink bg-surface shadow-brutal-md;
   }
 
   /* 按钮：按下时阴影收起，有"按下去"的手感 */
@@ -86,11 +86,11 @@
 
 /* ===== Markdown 正文 ===== */
 .md-body {
-  @apply text-[15px] leading-8 text-fg md:text-[17px] md:leading-9;
+  @apply text-[15px] leading-[1.8] text-fg md:text-base;
   word-break: break-word;
 }
 .md-body > * + * {
-  @apply mt-5;
+  @apply mt-4;
 }
 .md-body h1,
 .md-body h2,
@@ -99,10 +99,10 @@
   @apply font-extrabold text-ink;
 }
 .md-body h1 { @apply mt-10 text-2xl; }
-.md-body h2 { @apply mt-12 text-xl; }
+.md-body h2 { @apply mt-10 text-lg; }
 .md-body h2::before {
   content: "";
-  @apply mr-2.5 inline-block h-5 w-2 rounded-full border-2 border-ink bg-sky align-[-3px];
+  @apply mr-2 inline-block h-4 w-1.5 rounded-full border-2 border-ink bg-sky align-[-3px];
 }
 .md-body h3 { @apply mt-8 text-lg; }
 .md-body strong { @apply font-bold text-ink; }
@@ -131,7 +131,7 @@
 
 /* :::summary 重点摘要框：浅蓝底圆角卡片 */
 .md-summary {
-  @apply rounded-2xl bg-sky-soft px-5 py-4 text-fg md:px-6 md:py-5;
+  @apply rounded-2xl bg-sky-soft px-5 py-4 text-fg;
 }
 .md-summary > * + * { @apply mt-3; }
 

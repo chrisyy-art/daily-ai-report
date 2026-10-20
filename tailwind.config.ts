@@ -25,8 +25,8 @@ const config: Config = {
       },
       boxShadow: {
         // neo-brutalism 偏移阴影
-        brutal: "8px 8px 0 0 rgb(var(--ink))",
-        "brutal-md": "5px 5px 0 0 rgb(var(--ink))",
+        brutal: "7px 7px 0 0 rgb(var(--ink))",
+        "brutal-md": "6px 6px 0 0 rgb(var(--ink))",
         "brutal-sm": "3px 3px 0 0 rgb(var(--ink))",
       },
     },

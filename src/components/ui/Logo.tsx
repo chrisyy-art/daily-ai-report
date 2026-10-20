@@ -13,10 +13,10 @@ export function SparkIcon({ className = "" }: { className?: string }) {
 export default function Logo({ label = SITE_NAME }: { label?: string }) {
   return (
     <span className="flex min-w-0 items-center gap-2.5 sm:gap-3">
-      <span className="grid h-9 w-9 shrink-0 place-items-center sm:h-10 sm:w-10 rounded-full border-[3px] border-ink bg-sky text-ink shadow-[2px_2px_0_0_rgb(var(--ink))]">
-        <SparkIcon className="h-5 w-5" />
+      <span className="grid h-[34px] w-[34px] shrink-0 place-items-center rounded-full border-[2.5px] border-ink bg-sky text-ink shadow-[2px_2px_0_0_rgb(var(--ink))]">
+        <SparkIcon className="h-[18px] w-[18px]" />
       </span>
-      <span className="truncate text-base font-black text-ink sm:text-lg md:text-xl">{label}</span>
+      <span className="truncate text-base font-black text-ink sm:text-[17px]">{label}</span>
     </span>
   );
 }
