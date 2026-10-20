@@ -1,3 +1,5 @@
+import { SITE_NAME } from "@/lib/site";
+
 export function SparkIcon({ className = "" }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round">
@@ -8,13 +10,13 @@ export function SparkIcon({ className = "" }: { className?: string }) {
 }
 
 /** 站点 Logo：浅蓝圆形徽标 + 星芒 */
-export default function Logo({ label = "每日 AI" }: { label?: string }) {
+export default function Logo({ label = SITE_NAME }: { label?: string }) {
   return (
-    <span className="flex items-center gap-3">
-      <span className="grid h-10 w-10 place-items-center rounded-full border-[3px] border-ink bg-sky text-ink shadow-[2px_2px_0_0_rgb(var(--ink))]">
+    <span className="flex min-w-0 items-center gap-2.5 sm:gap-3">
+      <span className="grid h-9 w-9 shrink-0 place-items-center sm:h-10 sm:w-10 rounded-full border-[3px] border-ink bg-sky text-ink shadow-[2px_2px_0_0_rgb(var(--ink))]">
         <SparkIcon className="h-5 w-5" />
       </span>
-      <span className="text-xl font-black text-ink">{label}</span>
+      <span className="truncate text-base font-black text-ink sm:text-lg md:text-xl">{label}</span>
     </span>
   );
 }

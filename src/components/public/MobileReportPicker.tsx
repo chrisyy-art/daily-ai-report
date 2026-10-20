@@ -27,19 +27,21 @@ export default function MobileReportPicker({
   return (
     <div className="sticky top-0 z-30 -mx-4 mb-5 bg-bg/90 px-4 pb-1 pt-3 backdrop-blur lg:hidden">
       <div className="overflow-hidden rounded-[22px] border-[3px] border-ink bg-surface shadow-brutal-sm">
-        <div className="flex items-center justify-between gap-3 px-4 py-3">
-          <Link href="/">
+        <div className="flex items-center justify-between gap-2 px-3 py-3 sm:px-4">
+          <Link href="/" className="min-w-0">
             <Logo />
           </Link>
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
-            className="flex items-center gap-1.5 rounded-full border-2 border-ink bg-sky-soft px-3 py-1 text-sm font-extrabold text-ink"
+            className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border-2 border-ink bg-sky-soft px-3 py-1 text-sm font-extrabold text-ink"
           >
             {active ? (
               <span>
-                <span className="text-primary">{String(activeIndex + 1).padStart(2, "0")}</span> ·{" "}
+                <span className="hidden min-[380px]:inline">
+                  <span className="text-primary">{String(activeIndex + 1).padStart(2, "0")}</span> ·{" "}
+                </span>
                 {splitMonthDay(active.date).month}/{splitMonthDay(active.date).day}
               </span>
             ) : (

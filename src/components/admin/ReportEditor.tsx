@@ -227,7 +227,7 @@ export default function ReportEditor({ id, initial, initialPublished = false }: 
               className={`field min-h-[420px] flex-1 resize-none font-mono !leading-7 lg:min-h-0 ${
                 errors.content ? "!border-danger/60" : ""
               }`}
-              placeholder={"欢迎来到每日 AI。\n\n**某某发布新模型** [消息来源](https://...)\n\n:::summary\n重点摘要……\n:::"}
+              placeholder={"欢迎来到每日AI。\n\n**某某发布新模型** [消息来源](https://...)\n\n:::summary\n重点摘要……\n:::"}
             />
             {errors.content && <p className="field-error">{errors.content}</p>}
           </div>

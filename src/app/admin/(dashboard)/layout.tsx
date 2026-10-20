@@ -4,8 +4,9 @@ import { redirect } from "next/navigation";
 import LogoutButton from "@/components/admin/LogoutButton";
 import Logo from "@/components/ui/Logo";
 import { isAuthenticated } from "@/lib/session";
+import { SITE_NAME } from "@/lib/site";
 
-export const metadata: Metadata = { title: "每日 AI 后台" };
+export const metadata: Metadata = { title: `${SITE_NAME} 后台` };
 export const dynamic = "force-dynamic";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -17,7 +18,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <header className="sticky top-0 z-30 border-b-[3px] border-ink bg-surface">
         <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4 px-4 py-3 lg:px-6">
           <Link href="/admin">
-            <Logo label="每日 AI 后台" />
+            <Logo label={`${SITE_NAME} 后台`} />
           </Link>
           <nav className="flex items-center gap-2">
             <Link href="/" target="_blank" className="btn-ghost hidden !py-1.5 sm:inline-flex">
