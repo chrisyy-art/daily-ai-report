@@ -10,12 +10,15 @@
 需要 Node.js 18.17 或更高版本。
 
 ```bash
-npm install                 # 会自动执行 prisma generate
-cp .env.example .env        # 按需修改密码等配置
-npm run db:push             # 按 schema 创建 SQLite 数据库（prisma/dev.db）
-npm run db:seed             # 写入 2 条示例日报
-npm run dev                 # http://localhost:3000
+npm install        # 安装依赖（会自动执行 prisma generate）
+npm run setup      # 一键初始化：生成 .env、创建 SQLite 数据库、写入 2 条示例日报
+npm run dev        # http://localhost:3000
 ```
+
+`npm run setup` 只需在第一次运行；它等价于手动执行
+`cp .env.example .env && npm run db:push && npm run db:seed`。
+
+> 如果打开页面报 `Environment variable not found: DATABASE_URL`，说明缺少 `.env` 文件，运行 `npm run setup` 即可。
 
 - 阅读端：http://localhost:3000
 - 后台：http://localhost:3000/admin（默认密码 `change-me`）
