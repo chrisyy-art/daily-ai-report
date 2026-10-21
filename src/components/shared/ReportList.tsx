@@ -7,6 +7,7 @@ type Props = {
   activeId?: number;
   showStatus?: boolean;
   renderActions?: (report: ReportListEntry) => React.ReactNode;
+  renderMeta?: (report: ReportListEntry) => React.ReactNode;
   emptyText?: string;
 };
 
@@ -17,6 +18,7 @@ export default function ReportList({
   activeId,
   showStatus,
   renderActions,
+  renderMeta,
   emptyText = "暂无日报",
 }: Props) {
   if (reports.length === 0) {
@@ -34,6 +36,7 @@ export default function ReportList({
             active={r.id === activeId}
             showStatus={showStatus}
             actions={renderActions?.(r)}
+            meta={renderMeta?.(r)}
           />
         </li>
       ))}

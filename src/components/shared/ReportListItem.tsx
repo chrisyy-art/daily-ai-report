@@ -12,9 +12,11 @@ type Props = {
   showStatus?: boolean;
   /** 后台用：右侧操作按钮 */
   actions?: React.ReactNode;
+  /** 后台用：状态行后追加的信息（如阅读数据） */
+  meta?: React.ReactNode;
 };
 
-export default function ReportListItem({ report, index, href, active, showStatus, actions }: Props) {
+export default function ReportListItem({ report, index, href, active, showStatus, actions, meta }: Props) {
   const { month, day } = splitMonthDay(report.date);
 
   return (
@@ -45,6 +47,7 @@ export default function ReportListItem({ report, index, href, active, showStatus
                 {report.published ? "已发布" : "草稿"}
               </span>
               {report.date}
+              {meta}
             </span>
           )}
         </div>

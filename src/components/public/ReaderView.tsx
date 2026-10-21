@@ -5,6 +5,7 @@ import { SITE_NAME } from "@/lib/site";
 import BackHomeButton from "./BackHomeButton";
 import MobileReportPicker from "./MobileReportPicker";
 import Sidebar from "./Sidebar";
+import ViewTracker from "./ViewTracker";
 
 /** 页脚：配置了 ICP_NUMBER（中国内地服务器备案号）时按规定展示并链接到工信部备案系统 */
 function SiteFooter() {
@@ -38,6 +39,7 @@ export default function ReaderView({ reports, report }: { reports: ReportListEnt
         <article className="card overflow-hidden">
           {report ? (
             <>
+              <ViewTracker reportId={report.id} />
               <div className="tint relative border-b border-line/80 px-5 pb-8 pt-5 md:px-8 md:pb-9 md:pt-6">
                 <div aria-hidden className="tint-dots pointer-events-none absolute inset-0" />
                 {/* 顶部一行：左侧返回按钮，DAILY AI 居中 */}
