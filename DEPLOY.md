@@ -132,6 +132,8 @@ bash deploy/install.sh
    cd /opt/daily-ai-report
    bash deploy/enable-https.sh 你的域名 你的邮箱
    ```
+   同时要带 `www` 和不带 `www` 两个地址时，把两个域名都写上，例如：
+   `bash deploy/enable-https.sh example.com www.example.com 你的邮箱`
    完成后即可通过 `https://你的域名` 访问，http 会自动跳转到 https。
 
 ---
