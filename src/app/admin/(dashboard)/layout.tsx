@@ -18,7 +18,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <header className="sticky top-0 z-30 border-b border-line/80 bg-surface/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4 px-4 py-3 lg:px-6">
           <Link href="/admin">
-            <Logo label={`${SITE_NAME} 后台`} />
+            <Logo suffix=" 后台" />
           </Link>
           <nav className="flex items-center gap-2">
             <Link href="/" target="_blank" className="btn-ghost hidden !py-1.5 sm:inline-flex">

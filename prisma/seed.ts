@@ -6,28 +6,39 @@ const prisma = new PrismaClient();
 const reports = [
   {
     date: "2026-10-19",
-    title: "DeepSeek V4.1-Flash 更新并公开自研搜索 API / Google 开源 Harness",
-    summary: "DeepSeek 发布 V4.1-Flash 小版本更新并开放 Search & Fetch API；Google 开源 Agent 评测框架 Harness。",
+    title: "全球AI资讯日报",
+    summary: "示例：按「AI模型 / AI应用 / 算力与MaaS / AI硬件」四个板块组织的日报。",
     published: true,
-    content: `> 欢迎来到每日 AI。（以下为示例内容）
+    content: `> 本期主线（示例内容）：DeepSeek 发布 V4.1-Flash 小版本更新并开放自研搜索 API；Google 开源 Agent 评测框架 Harness。企业应用侧，多家厂商推进 Agent 落地；算力侧，云厂商继续下调推理价格。
 
-**DeepSeek 发布并上线 DeepSeek-V4.1-Flash-1017**，作为 V4.1-Flash 的小版本更新，同步开放 Search & Fetch API（DeepSeek 自研搜索 API）[消息来源](https://example.com/source) [体验地址](https://example.com/try)
+## AI模型
 
-:::summary
-DeepSeek V4.1 Flash 1017 通过基于自反馈的强化学习（RL）训练技术，提升了在游戏开发、3D 建模等完整项目的能力。模型沿用 deepseek-flash 模型名，官网、App 与 API 已切换；官方称在推理、编码、Agent 与视觉基准上全面提升，任务耗时与输出长度下降，形成性能-成本帕累托改进。Search/Fetch 通过服务端工具调用，按 **0.75 美元/千次** 计费。
-:::
+**【DeepSeek 发布 V4.1-Flash-1017 并开放自研搜索 API】**（DeepSeek，10月17日｜[链接](https://example.com/source)）
 
-**Google 开源 Agent 评测框架 Harness** [消息来源](https://example.com/source)
+- 小版本更新，同步开放 Search & Fetch API，按 **0.75 美元/千次** 计费。
+- 官方称在推理、编码、Agent 与视觉基准上全面提升，任务耗时与输出长度下降。
 
-:::summary
-Harness 提供统一的任务定义、沙箱执行与打分接口，可复现主流 Agent 基准，并支持自定义工具与多轮交互评测。
-:::
+**【Google 开源 Agent 评测框架 Harness】**（Google，10月18日｜[链接](https://example.com/source)）
 
-## 简讯
+- 提供统一的任务定义、沙箱执行与打分接口，可复现主流 Agent 基准。
 
-- 某开源社区发布新一代多模态数据集，覆盖 **40+** 语言
-- 多家云厂商宣布下调推理 API 价格
-- 详见各条目的原文链接
+## AI应用
+
+**【某企业助手完成新一轮融资】**（TechCrunch，10月18日｜[链接](https://example.com/source)）
+
+- 面向企业团队的 AI 助手，资金将用于扩展 Agent 能力。
+
+## 算力与MaaS
+
+**【多家云厂商下调推理 API 价格】**（示例来源，10月18日｜[链接](https://example.com/source)）
+
+- 主流模型的输入 / 输出价格平均下调约三成。
+
+## AI硬件
+
+**【AI 芯片公司完成 E 轮融资】**（Axios，10月19日｜[链接](https://example.com/source)）
+
+- 资金用于规模制造与全球商业扩张，量产与客户交付仍待兑现。
 `,
   },
   {

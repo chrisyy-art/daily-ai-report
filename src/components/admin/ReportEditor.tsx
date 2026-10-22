@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Markdown from "@/components/shared/Markdown";
-import ReportHeader, { DailyBadge } from "@/components/shared/ReportHeader";
+import ReportBody from "@/components/shared/ReportBody";
+import ReportHeader from "@/components/shared/ReportHeader";
 import { htmlToMarkdown } from "@/lib/markdown/html-to-markdown";
 import { htmlFileToMarkdown } from "@/lib/markdown/import-html";
 import type { FieldErrors } from "@/lib/validation";
@@ -33,6 +33,8 @@ type Props = {
 
 // 工具栏片段：before / after 包裹选区，placeholder 为无选区时的默认文字
 const SNIPPETS = [
+  { label: "板块", title: "新增一个板块（前台显示为一个 Tab）", before: "## ", after: "", placeholder: "AI模型", block: true },
+  { label: "条目", title: "新增一条新闻（前台显示为一张卡片）", before: "**【", after: "】**（来源，日期｜[链接](https://)）\n\n- 要点", placeholder: "新闻标题", block: true },
   { label: "B", title: "加粗", before: "**", after: "**", placeholder: "加粗文字" },
   { label: "❝", title: "引用", before: "> ", after: "", placeholder: "引用内容", block: true },
   { label: "摘要框", title: "重点摘要框", before: ":::summary\n", after: "\n:::", placeholder: "这里写重点摘要", block: true },
@@ -465,18 +467,15 @@ export default function ReportEditor({ id, initial, initialPublished = false, in
           <div className="sticky top-0 z-10 border-b border-line/80 bg-surface/90 px-5 py-2 text-[11px] font-semibold tracking-[0.3em] text-muted backdrop-blur">
             PREVIEW
           </div>
-          <div className="tint border-b border-line/80 px-5 py-8 md:px-8">
-            <div className="mb-6 text-center">
-              <DailyBadge />
-            </div>
-            <ReportHeader title={values.title} date={values.date} />
-          </div>
-          <div className="px-5 py-8 md:px-8">
-            {values.content.trim() ? (
-              <Markdown content={values.content} />
-            ) : (
-              <p className="text-center text-sm text-muted">正文预览将显示在这里</p>
-            )}
+          <div className="bg-bg p-3 md:p-4">
+            <ReportBody
+              content={values.content.trim() ? values.content : "正文预览将显示在这里"}
+              header={
+                <div className="tint border-b border-line/80 px-5 py-8 md:px-8">
+                  <ReportHeader title={values.title} date={values.date} />
+                </div>
+              }
+            />
           </div>
         </section>
       </div>

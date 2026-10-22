@@ -1,15 +1,4 @@
-import { SparkIcon } from "@/components/ui/Logo";
 import { formatChineseDate } from "@/lib/date";
-
-/** "✦ DAILY AI" 小标识 */
-export function DailyBadge() {
-  return (
-    <p className="inline-flex items-center gap-1.5 rounded-full border border-primary/10 bg-surface/80 px-3 py-1 text-[11px] font-semibold tracking-[0.25em] text-primary">
-      <SparkIcon className="h-3.5 w-3.5" />
-      DAILY AI
-    </p>
-  );
-}
 
 /** 日报大标题 + 日期。对客端和后台预览共用 */
 export default function ReportHeader({ title, date }: { title: string; date: string }) {

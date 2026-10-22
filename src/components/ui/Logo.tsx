@@ -1,22 +1,23 @@
-import { SITE_NAME } from "@/lib/site";
+import Image from "next/image";
+import { BRAND_TEXT } from "@/lib/site";
 
-export function SparkIcon({ className = "" }: { className?: string }) {
+/** 品牌 Logo：「蚂蚁集团 | 数字科技」图片 + 栏目名称 */
+export default function Logo({ suffix = "" }: { suffix?: string }) {
   return (
-    <svg viewBox="0 0 24 24" className={className} aria-hidden fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round">
-      <path d="M10 3.5c.5 4.4 2.6 6.5 7 7-4.4.5-6.5 2.6-7 7-.5-4.4-2.6-6.5-7-7 4.4-.5 6.5-2.6 7-7Z" />
-      <path d="M18 3v4M16 5h4M19 15.5v3M17.5 17h3" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-/** 站点 Logo：蓝青渐变圆角方标 + 星芒 */
-export default function Logo({ label = SITE_NAME }: { label?: string }) {
-  return (
-    <span className="flex min-w-0 items-center gap-2.5">
-      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-primary to-sky text-white shadow-primary-glow">
-        <SparkIcon className="h-[18px] w-[18px]" />
+    <span className="flex min-w-0 items-center gap-3">
+      <Image
+        src="/brand/antgroup-digital-tech.png"
+        alt="蚂蚁集团 数字科技"
+        width={276}
+        height={86}
+        priority
+        unoptimized
+        className="h-7 w-auto shrink-0 sm:h-10"
+      />
+      <span className="truncate text-[13px] font-semibold tracking-tight text-ink sm:text-[15px]">
+        {BRAND_TEXT}
+        {suffix}
       </span>
-      <span className="truncate text-base font-bold tracking-tight text-ink sm:text-[17px]">{label}</span>
     </span>
   );
 }
