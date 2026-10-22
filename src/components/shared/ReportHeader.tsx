@@ -1,17 +1,18 @@
-import { formatChineseDate } from "@/lib/date";
+import { formatLongDate } from "@/lib/date";
 
-/** 日报大标题 + 日期。对客端和后台预览共用 */
-export default function ReportHeader({ title, date }: { title: string; date: string }) {
+/** 日报标题区：日期（主色小字）+ 大标题 + 补充信息。对客端和后台预览共用 */
+export default function ReportHeader({ title, date, meta }: { title: string; date: string; meta?: string }) {
   return (
-    <header className="text-center">
-      <h1 className="text-[22px] font-bold leading-snug tracking-tight text-ink md:text-[30px] md:leading-[1.35]">
-        {title || "（未填写标题）"}
-      </h1>
+    <header>
       {date && (
-        <p className="mt-3 text-sm font-medium text-muted">
-          <time dateTime={date}>{formatChineseDate(date)}</time>
+        <p className="text-sm font-semibold text-primary">
+          <time dateTime={date}>{formatLongDate(date)}</time>
         </p>
       )}
+      <h1 className="mt-3 text-[28px] font-bold leading-[1.25] tracking-tight text-ink md:text-[40px]">
+        {title || "（未填写标题）"}
+      </h1>
+      {meta && <p className="mt-3 text-sm text-muted">{meta}</p>}
     </header>
   );
 }

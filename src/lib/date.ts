@@ -27,3 +27,13 @@ export function formatChineseDate(date: string): string {
   const [, m, d] = date.split("-");
   return `${Number(m)} 月 ${Number(d)} 日`;
 }
+
+const WEEKDAYS = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+
+/** "2026-10-22" → "2026年10月22日 · 星期四" */
+export function formatLongDate(date: string): string {
+  const [y, m, d] = date.split("-").map(Number);
+  if (!y || !m || !d) return date;
+  const weekday = WEEKDAYS[new Date(Date.UTC(y, m - 1, d)).getUTCDay()];
+  return `${y}年${m}月${d}日 · ${weekday}`;
+}

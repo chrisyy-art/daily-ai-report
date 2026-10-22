@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import ReportBody from "@/components/shared/ReportBody";
-import ReportHeader from "@/components/shared/ReportHeader";
 import { htmlToMarkdown } from "@/lib/markdown/html-to-markdown";
 import { htmlFileToMarkdown } from "@/lib/markdown/import-html";
 import type { FieldErrors } from "@/lib/validation";
@@ -467,14 +466,12 @@ export default function ReportEditor({ id, initial, initialPublished = false, in
           <div className="sticky top-0 z-10 border-b border-line/80 bg-surface/90 px-5 py-2 text-[11px] font-semibold tracking-[0.3em] text-muted backdrop-blur">
             PREVIEW
           </div>
-          <div className="bg-bg p-3 md:p-4">
+          <div className="px-5 py-6 md:px-8 md:py-8">
             <ReportBody
+              title={values.title}
+              date={values.date}
               content={values.content.trim() ? values.content : "正文预览将显示在这里"}
-              header={
-                <div className="tint border-b border-line/80 px-5 py-8 md:px-8">
-                  <ReportHeader title={values.title} date={values.date} />
-                </div>
-              }
+              stickyTop={33}
             />
           </div>
         </section>

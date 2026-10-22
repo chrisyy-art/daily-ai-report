@@ -4,19 +4,20 @@
 
 /* ===== 主题变量（RGB 三元组，便于 Tailwind 叠加透明度）===== */
 :root {
-  --bg: 247 249 252;        /* #F7F9FC 页面底色 */
+  /* 中性色参考 Google Material 灰阶；主色先沿用科技蓝，拿到「白模版」后在这里统一替换 */
+  --bg: 255 255 255;        /* #FFFFFF 页面底色 */
   --surface: 255 255 255;   /* 卡片白 */
-  --ink: 15 23 42;          /* #0F172A 标题 */
-  --fg: 51 65 85;           /* #334155 正文 */
-  --muted: 100 116 139;     /* #64748B 次要文字 */
-  --line: 226 232 240;      /* #E2E8F0 细描边 */
-  --soft: 244 247 251;      /* #F4F7FB 浅底容器 */
-  --primary: 22 93 255;     /* #165DFF 科技蓝：主色 */
-  --sky: 34 184 240;        /* #22B8F0 青色：渐变终点 */
-  --sky-soft: 236 243 255;  /* #ECF3FF 浅蓝底：选中项、标签 */
+  --ink: 32 33 36;          /* #202124 标题 */
+  --fg: 60 64 67;           /* #3C4043 正文 */
+  --muted: 95 99 104;       /* #5F6368 次要文字 */
+  --line: 232 234 237;      /* #E8EAED 分隔线 */
+  --soft: 248 249 250;      /* #F8F9FA 浅灰底 */
+  --primary: 22 93 255;     /* #165DFF 主色 */
+  --sky: 34 184 240;        /* #22B8F0 辅助青 */
+  --sky-soft: 232 240 254;  /* #E8F0FE 浅蓝底 */
   --link: 22 93 255;        /* 链接蓝 */
-  --danger: 220 38 38;
-  --success: 16 163 110;
+  --danger: 217 48 37;
+  --success: 24 128 56;
   color-scheme: light;
 }
 
@@ -28,11 +29,6 @@
 
   body {
     min-height: 100vh;
-    /* 顶部一层很淡的蓝色光晕 */
-    background-image:
-      radial-gradient(60rem 28rem at 15% -8%, rgb(var(--primary) / 0.07), transparent 70%),
-      radial-gradient(48rem 24rem at 95% -10%, rgb(var(--sky) / 0.07), transparent 70%);
-    background-repeat: no-repeat;
   }
 
   ::selection {
@@ -44,18 +40,6 @@
   /* 白底大圆角卡片：细描边 + 柔和投影 */
   .card {
     @apply rounded-3xl border border-line/80 bg-surface shadow-soft;
-  }
-
-  /* 浅蓝渐变底色区块（文章头部等） */
-  .tint {
-    background: linear-gradient(135deg, rgb(var(--sky-soft)) 0%, rgb(246 249 255) 55%, rgb(var(--surface)) 100%);
-  }
-  /* 叠在 .tint 上的点阵纹理，从右上角向左下淡出 */
-  .tint-dots {
-    background-image: radial-gradient(rgb(var(--primary) / 0.12) 1px, transparent 1.2px);
-    background-size: 16px 16px;
-    -webkit-mask-image: linear-gradient(225deg, #000 0%, transparent 45%);
-    mask-image: linear-gradient(225deg, #000 0%, transparent 45%);
   }
 
   /* 按钮：胶囊形 */
@@ -142,14 +126,34 @@
 .md-body th, .md-body td { @apply border border-line px-3 py-2 text-left; }
 .md-body th { @apply bg-soft font-semibold text-ink; }
 
-/* :::summary 重点摘要框：浅蓝底容器 */
+/* :::summary 重点摘要框：浅灰底说明块 */
 .md-summary {
-  @apply rounded-2xl border border-primary/10 px-5 py-4 text-fg;
-  background: linear-gradient(135deg, rgb(var(--sky-soft) / 0.9), rgb(246 250 255 / 0.9));
+  @apply rounded-xl bg-soft px-5 py-4 text-fg;
 }
 .md-summary > * + * { @apply mt-3; }
 
 /* "消息来源" "体验地址"：蓝色文字链接 */
 .md-body a.md-tag-link {
   @apply ml-1.5 whitespace-nowrap font-medium text-link;
+}
+
+/* ===== 前台阅读样式 ===== */
+
+/* 导语：比正文略大；「本期主线」常写成引用，这里改为主色细竖线 */
+.lead .md-body {
+  @apply text-[16px] leading-[1.85] text-fg md:text-[17px];
+}
+.lead .md-body blockquote {
+  @apply border-l-[3px] border-primary pl-5 text-fg;
+}
+
+/* 新闻条目：第一段是标题行，字号更大、颜色更深 */
+.news-item .md-body > p:first-child {
+  @apply text-[16px] leading-[1.6] text-ink md:text-[17px];
+}
+.news-item .md-body > p:first-child strong {
+  @apply font-semibold;
+}
+.news-item .md-body > * + * {
+  @apply mt-3;
 }

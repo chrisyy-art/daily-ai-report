@@ -1,62 +1,67 @@
+import Link from "next/link";
 import ReportBody from "@/components/shared/ReportBody";
-import ReportHeader from "@/components/shared/ReportHeader";
+import Logo from "@/components/ui/Logo";
 import type { Report, ReportListEntry } from "@/lib/reports";
 import { SITE_NAME } from "@/lib/site";
 import MobileReportPicker from "./MobileReportPicker";
 import Sidebar from "./Sidebar";
 import ViewTracker from "./ViewTracker";
 
+/** 顶栏：Logo + 站点名；移动端右侧是「往期」目录 */
+function TopBar({ reports, activeId }: { reports: ReportListEntry[]; activeId?: number }) {
+  return (
+    <header className="sticky top-0 z-40 border-b border-line bg-surface">
+      <div className="relative mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-4 px-4 lg:px-8">
+        <Link href="/" className="min-w-0">
+          <Logo />
+        </Link>
+        <MobileReportPicker reports={reports} activeId={activeId} />
+      </div>
+    </header>
+  );
+}
+
 /** 页脚：配置了 ICP_NUMBER（中国内地服务器备案号）时按规定展示并链接到工信部备案系统 */
 function SiteFooter() {
   const icp = process.env.ICP_NUMBER;
   return (
-    <footer className="mt-8 text-center text-xs font-semibold text-muted">
-      <p>
-        © {new Date().getFullYear()} {SITE_NAME}
+    <footer className="mt-20 border-t border-line">
+      <div className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-2 px-4 py-6 text-xs text-muted lg:px-8">
+        <p>
+          © {new Date().getFullYear()} {SITE_NAME}
+        </p>
         {icp && (
-          <>
-            <span className="mx-2">·</span>
-            <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" className="hover:text-ink">
-              {icp}
-            </a>
-          </>
+          <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" className="hover:text-ink">
+            {icp}
+          </a>
         )}
-      </p>
+      </div>
     </footer>
   );
 }
 
-/** 对客阅读端整体布局：左侧日报列表 + 右侧正文 */
+/** 对客阅读端整体布局：顶栏 + 左侧往期目录 + 右侧正文 */
 export default function ReaderView({ reports, report }: { reports: ReportListEntry[]; report: Report | null }) {
   return (
-    <div className="mx-auto flex max-w-[1280px] gap-7 px-4 pb-12 lg:px-8 lg:pt-8">
-      <Sidebar reports={reports} activeId={report?.id} />
+    <div className="flex min-h-screen flex-col">
+      <TopBar reports={reports} activeId={report?.id} />
 
-      <main className="min-w-0 flex-1">
-        <MobileReportPicker reports={reports} activeId={report?.id} />
+      <div className="mx-auto flex w-full max-w-[1200px] flex-1 gap-14 px-4 pt-8 md:pt-12 lg:px-8">
+        <Sidebar reports={reports} activeId={report?.id} />
 
-        {report ? (
-          <>
-            <ViewTracker reportId={report.id} />
-            <ReportBody
-              key={report.id}
-              content={report.content}
-              header={
-                <div className="tint relative border-b border-line/80 px-5 py-8 md:px-8 md:py-10">
-                  <div aria-hidden className="tint-dots pointer-events-none absolute inset-0" />
-                  <div className="relative mx-auto max-w-4xl">
-                    <ReportHeader title={report.title} date={report.date} />
-                  </div>
-                </div>
-              }
-            />
-          </>
-        ) : (
-          <div className="card px-6 py-24 text-center font-medium text-muted">还没有发布任何日报，敬请期待。</div>
-        )}
+        <main className="min-w-0 max-w-[800px] flex-1">
+          {report ? (
+            <>
+              <ViewTracker reportId={report.id} />
+              <ReportBody key={report.id} title={report.title} date={report.date} content={report.content} />
+            </>
+          ) : (
+            <p className="py-24 text-center text-muted">还没有发布任何日报，敬请期待。</p>
+          )}
+        </main>
+      </div>
 
-        <SiteFooter />
-      </main>
+      <SiteFooter />
     </div>
   );
 }

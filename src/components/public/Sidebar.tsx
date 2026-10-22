@@ -1,20 +1,13 @@
-import Link from "next/link";
-import Logo from "@/components/ui/Logo";
 import ReportList from "@/components/shared/ReportList";
 import type { ReportListEntry } from "@/lib/reports";
 
-/** 桌面端固定侧栏 */
+/** 桌面端左侧「往期日报」目录 */
 export default function Sidebar({ reports, activeId }: { reports: ReportListEntry[]; activeId?: number }) {
   return (
-    <aside className="card sticky top-8 hidden h-[calc(100vh-4rem)] w-[320px] shrink-0 flex-col overflow-hidden lg:flex">
-      <div className="px-6 pb-4 pt-6">
-        <Link href="/">
-          <Logo />
-        </Link>
-      </div>
-      <div className="mx-6 border-t border-line" />
-      <nav className="flex-1 overflow-y-auto px-4 pb-5 pt-4 [scrollbar-width:thin]" aria-label="日报列表">
-        <ReportList reports={reports} activeId={activeId} hrefFor={(r) => `/report/${r.date}`} />
+    <aside className="sticky top-24 hidden max-h-[calc(100vh-7rem)] w-[248px] shrink-0 flex-col self-start lg:flex">
+      <h2 className="mb-3 pl-4 text-xs font-semibold uppercase tracking-[0.12em] text-muted">往期日报</h2>
+      <nav className="-mr-2 overflow-y-auto pr-2 [scrollbar-width:thin]" aria-label="往期日报">
+        <ReportList reports={reports} activeId={activeId} variant="plain" hrefFor={(r) => `/report/${r.date}`} />
       </nav>
     </aside>
   );

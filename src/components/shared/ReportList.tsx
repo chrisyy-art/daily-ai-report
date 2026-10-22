@@ -9,6 +9,7 @@ type Props = {
   renderActions?: (report: ReportListEntry) => React.ReactNode;
   renderMeta?: (report: ReportListEntry) => React.ReactNode;
   emptyText?: string;
+  variant?: "card" | "plain";
 };
 
 /** 日报列表。传入的 reports 需按日期倒序，最新一篇编号为 01 */
@@ -20,13 +21,14 @@ export default function ReportList({
   renderActions,
   renderMeta,
   emptyText = "暂无日报",
+  variant = "card",
 }: Props) {
   if (reports.length === 0) {
     return <p className="px-4 py-8 text-center text-sm text-muted">{emptyText}</p>;
   }
 
   return (
-    <ul className="space-y-2">
+    <ul className={variant === "plain" ? "" : "space-y-2"}>
       {reports.map((r, i) => (
         <li key={r.id}>
           <ReportListItem
@@ -37,6 +39,7 @@ export default function ReportList({
             showStatus={showStatus}
             actions={renderActions?.(r)}
             meta={renderMeta?.(r)}
+            variant={variant}
           />
         </li>
       ))}

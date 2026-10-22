@@ -16,11 +16,14 @@ function textOf(children: React.ReactNode): string {
 const components: Components = {
   a({ href, children, node: _node, ...rest }) {
     const isExternal = !!href && /^https?:\/\//.test(href);
-    const isTag = TAG_LINKS.has(textOf(children).trim());
+    const text = textOf(children).trim();
+    const isTag = TAG_LINKS.has(text);
+    // 「链接」「原文」这类短链接文字不在中间折行
+    const nowrap = !isTag && text.length > 0 && text.length <= 6;
     return (
       <a
         href={href}
-        className={isTag ? "md-tag-link" : undefined}
+        className={isTag ? "md-tag-link" : nowrap ? "whitespace-nowrap" : undefined}
         {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
         {...rest}
       >

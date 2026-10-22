@@ -2,13 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import Link from "next/link";
-import Logo from "@/components/ui/Logo";
-import ReportListItem from "@/components/shared/ReportListItem";
-import { splitMonthDay } from "@/lib/date";
+import ReportList from "@/components/shared/ReportList";
 import type { ReportListEntry } from "@/lib/reports";
 
-/** 移动端：顶部栏 + 点击展开的日报下拉列表 */
+/** 移动端：顶栏右侧「往期」按钮，点开为下拉目录 */
 export default function MobileReportPicker({
   reports,
   activeId,
@@ -18,51 +15,29 @@ export default function MobileReportPicker({
 }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const activeIndex = reports.findIndex((r) => r.id === activeId);
-  const active = reports[activeIndex];
 
   // 切换页面后自动收起
   useEffect(() => setOpen(false), [pathname]);
 
   return (
-    <div className="sticky top-0 z-30 -mx-4 mb-5 bg-bg/90 px-4 pb-1 pt-3 backdrop-blur lg:hidden">
-      <div className="overflow-hidden rounded-2xl border border-line/80 bg-surface shadow-soft-sm">
-        <div className="flex items-center justify-between gap-2 px-3 py-3 sm:px-4">
-          <Link href="/" className="min-w-0">
-            <Logo />
-          </Link>
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-expanded={open}
-            className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-sky-soft px-3 py-1 text-sm font-semibold text-ink"
-          >
-            {active ? (
-              <span>
-                <span className="hidden min-[380px]:inline">
-                  <span className="text-primary">{String(activeIndex + 1).padStart(2, "0")}</span> ·{" "}
-                </span>
-                {splitMonthDay(active.date).month}/{splitMonthDay(active.date).day}
-              </span>
-            ) : (
-              <span>往期</span>
-            )}
-            <svg viewBox="0 0 16 16" className={`h-3.5 w-3.5 transition ${open ? "rotate-180" : ""}`} aria-hidden>
-              <path d="m4 6 4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-            </svg>
-          </button>
-        </div>
+    <div className="lg:hidden">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-medium text-fg transition hover:bg-soft"
+      >
+        往期
+        <svg viewBox="0 0 16 16" className={`h-4 w-4 transition ${open ? "rotate-180" : ""}`} aria-hidden>
+          <path d="m4 6 4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+      </button>
 
-        {open && (
-          <ul className="max-h-[60vh] space-y-2 overflow-y-auto border-t border-line p-3">
-            {reports.map((r, i) => (
-              <li key={r.id}>
-                <ReportListItem report={r} index={i + 1} href={`/report/${r.date}`} active={r.id === activeId} />
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      {open && (
+        <div className="absolute inset-x-0 top-full max-h-[70vh] overflow-y-auto border-b border-line bg-surface px-2 py-3 shadow-[0_12px_24px_-12px_rgb(32_33_36/0.25)]">
+          <ReportList reports={reports} activeId={activeId} variant="plain" hrefFor={(r) => `/report/${r.date}`} />
+        </div>
+      )}
     </div>
   );
 }

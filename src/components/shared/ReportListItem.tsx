@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { splitMonthDay } from "@/lib/date";
+import { formatChineseDate, splitMonthDay } from "@/lib/date";
 import type { ReportListEntry } from "@/lib/reports";
 
 type Props = {
@@ -14,10 +14,38 @@ type Props = {
   actions?: React.ReactNode;
   /** 后台用：状态行后追加的信息（如阅读数据） */
   meta?: React.ReactNode;
+  /** card：后台的圆角卡片行；plain：前台目录样式，仅当前项带主色竖线 */
+  variant?: "card" | "plain";
 };
 
-export default function ReportListItem({ report, index, href, active, showStatus, actions, meta }: Props) {
+export default function ReportListItem({ report, index, href, active, showStatus, actions, meta, variant = "card" }: Props) {
   const { month, day } = splitMonthDay(report.date);
+
+  if (variant === "plain") {
+    return (
+      <Link
+        href={href}
+        aria-current={active ? "page" : undefined}
+        className={`group flex gap-3 border-l-2 py-2.5 pl-4 pr-2 transition ${
+          active ? "border-primary" : "border-transparent hover:border-line"
+        }`}
+      >
+        <span className={`w-5 shrink-0 pt-px text-xs font-semibold tabular-nums ${active ? "text-primary" : "text-muted/70"}`}>
+          {String(index).padStart(2, "0")}
+        </span>
+        <span className="min-w-0">
+          <span
+            className={`line-clamp-2 text-sm leading-snug ${
+              active ? "font-semibold text-ink" : "text-fg group-hover:text-ink"
+            }`}
+          >
+            {report.title}
+          </span>
+          <span className="mt-1 block text-xs text-muted">{formatChineseDate(report.date)}</span>
+        </span>
+      </Link>
+    );
+  }
 
   return (
     <div
