@@ -171,3 +171,76 @@
 .news-item .md-body > * + * {
   @apply mt-3;
 }
+
+/* ===== 前台深色主题（参考钉钉开发者平台）=====
+   只作用于前台根节点 [data-reader][data-theme="dark"]，后台不受影响 */
+.reader[data-theme="dark"] {
+  --bg: 10 10 12;           /* #0A0A0C 近黑底 */
+  --surface: 21 22 26;      /* #15161A 卡片 */
+  --ink: 245 246 248;       /* 标题白 */
+  --fg: 201 205 213;        /* 正文浅灰 */
+  --muted: 138 143 153;     /* 次要文字 */
+  --line: 40 42 48;         /* #282A30 细边框 */
+  --soft: 30 31 36;         /* 悬停底 */
+  --primary: 46 125 255;    /* #2E7DFF 深色下更亮的蓝 */
+  --sky: 139 92 246;        /* #8B5CF6 紫：渐变终点 */
+  --sky-soft: 22 36 66;     /* #162442 深蓝：选中项、导语底 */
+  --link: 92 156 255;       /* 链接蓝 */
+  color-scheme: dark;
+  background: rgb(var(--bg));
+  color: rgb(var(--fg));
+}
+
+/* 顶栏：比卡片更深的黑 */
+.reader[data-theme="dark"] .reader-topbar {
+  background: rgb(var(--bg) / 0.97);
+  backdrop-filter: blur(12px);
+}
+
+/* 背景光束：右上角蓝紫光晕 + 一道斜向光线 */
+.reader-glow {
+  display: none;
+}
+.reader[data-theme="dark"] .reader-glow {
+  display: block;
+  background:
+    radial-gradient(38rem 22rem at 82% 8%, rgb(46 125 255 / 0.22), transparent 70%),
+    radial-gradient(30rem 20rem at 98% 30%, rgb(139 92 246 / 0.18), transparent 70%),
+    linear-gradient(200deg, transparent 38%, rgb(150 170 255 / 0.10) 50%, transparent 58%);
+  -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent);
+  mask-image: linear-gradient(180deg, #000 55%, transparent);
+}
+
+/* 卡片：左上角一抹蓝色光晕，与钉钉开发者平台的卡片一致 */
+.reader[data-theme="dark"] .panel {
+  background:
+    radial-gradient(70% 55% at 0% 0%, rgb(46 125 255 / 0.12), transparent 70%),
+    rgb(var(--surface));
+}
+.reader[data-theme="dark"] .panel-hero {
+  background:
+    radial-gradient(70% 70% at 0% 0%, rgb(46 125 255 / 0.22), transparent 70%),
+    radial-gradient(60% 80% at 100% 0%, rgb(139 92 246 / 0.14), transparent 70%),
+    rgb(var(--surface));
+}
+
+/* 大标题：白色过渡到蓝紫，呼应「折射无限可能」 */
+.reader[data-theme="dark"] .report-title {
+  background: linear-gradient(90deg, #ffffff 0%, #ffffff 25%, #8fb0ff 65%, #b39bff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* 导语框、选中项在深色下加一圈淡蓝描边 */
+.reader[data-theme="dark"] .lead {
+  border-color: rgb(var(--primary) / 0.25);
+}
+.reader[data-theme="dark"] ::selection {
+  background: rgb(var(--primary) / 0.35);
+}
+/* 吸顶 Tab 栏：轻微透明，滚动时下方文字不会透出来 */
+.reader[data-theme="dark"] .section-tabs-bar {
+  background: rgb(var(--surface) / 0.96);
+  backdrop-filter: blur(14px);
+}

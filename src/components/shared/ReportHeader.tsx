@@ -9,7 +9,7 @@ export default function ReportHeader({ title, date, meta }: { title: string; dat
           <time dateTime={date}>{formatLongDate(date)}</time>
         </p>
       )}
-      <h1 className="mt-3 text-[28px] font-bold leading-[1.25] tracking-tight text-ink md:text-[40px]">
+      <h1 className="report-title mt-3 text-[28px] font-bold leading-[1.25] tracking-tight text-ink md:text-[40px]">
         {title || "（未填写标题）"}
       </h1>
       {meta && <p className="mt-3 text-sm text-muted">{meta}</p>}

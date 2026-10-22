@@ -30,7 +30,7 @@ export default function SectionTabs({ tabs, panels, stickyTop }: Props) {
   return (
     <>
       <div ref={anchorRef} />
-      <div className="sticky z-30 rounded-t-[20px] bg-surface px-5 md:rounded-t-3xl md:px-10" style={{ top: stickyTop }}>
+      <div className="section-tabs-bar sticky z-30 rounded-t-[20px] bg-surface px-5 md:rounded-t-3xl md:px-10" style={{ top: stickyTop }}>
         {/* 手机上 5 个 Tab 放不下时可左右滑动，右侧渐隐提示还有内容 */}
         <span aria-hidden className="pointer-events-none absolute inset-y-0 right-5 z-10 w-10 bg-gradient-to-l from-surface sm:hidden" />
         <div

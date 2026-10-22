@@ -1,21 +1,27 @@
+import { cookies } from "next/headers";
 import Link from "next/link";
 import ReportBody from "@/components/shared/ReportBody";
 import Logo from "@/components/ui/Logo";
 import type { Report, ReportListEntry } from "@/lib/reports";
 import { SITE_NAME } from "@/lib/site";
+import { parseTheme, THEME_COOKIE, type ReaderTheme } from "@/lib/theme";
 import MobileReportPicker from "./MobileReportPicker";
 import Sidebar from "./Sidebar";
+import ThemeToggle from "./ThemeToggle";
 import ViewTracker from "./ViewTracker";
 
 /** 顶栏：Logo + 站点名；移动端右侧是「往期」目录 */
-function TopBar({ reports, activeId }: { reports: ReportListEntry[]; activeId?: number }) {
+function TopBar({ reports, activeId, theme }: { reports: ReportListEntry[]; activeId?: number; theme: ReaderTheme }) {
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-surface">
+    <header className="reader-topbar sticky top-0 z-40 border-b border-line bg-surface">
       <div className="relative mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-4 px-4 lg:px-8">
         <Link href="/" className="min-w-0">
           <Logo />
         </Link>
-        <MobileReportPicker reports={reports} activeId={activeId} />
+        <div className="flex items-center gap-1">
+          <ThemeToggle initial={theme} />
+          <MobileReportPicker reports={reports} activeId={activeId} />
+        </div>
       </div>
     </header>
   );
@@ -25,7 +31,7 @@ function TopBar({ reports, activeId }: { reports: ReportListEntry[]; activeId?: 
 function SiteFooter() {
   const icp = process.env.ICP_NUMBER;
   return (
-    <footer className="mt-12 border-t border-line">
+    <footer className="relative mt-12 border-t border-line">
       <div className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-2 px-4 py-6 text-xs text-muted lg:px-8">
         <p>
           © {new Date().getFullYear()} {SITE_NAME}
@@ -42,11 +48,15 @@ function SiteFooter() {
 
 /** 对客阅读端整体布局：顶栏 + 左侧往期目录 + 右侧正文 */
 export default function ReaderView({ reports, report }: { reports: ReportListEntry[]; report: Report | null }) {
-  return (
-    <div className="flex min-h-screen flex-col">
-      <TopBar reports={reports} activeId={report?.id} />
+  const theme = parseTheme(cookies().get(THEME_COOKIE)?.value);
 
-      <div className="mx-auto flex w-full max-w-[1200px] flex-1 gap-6 px-3 pt-4 md:px-4 md:pt-8 lg:gap-8 lg:px-8">
+  return (
+    <div data-reader data-theme={theme} className="reader relative flex min-h-screen flex-col">
+      {/* 深色主题下的背景光效（浅色主题隐藏） */}
+      <div aria-hidden className="reader-glow pointer-events-none absolute inset-x-0 top-0 h-[640px] overflow-hidden" />
+      <TopBar reports={reports} activeId={report?.id} theme={theme} />
+
+      <div className="relative mx-auto flex w-full max-w-[1200px] flex-1 gap-6 px-3 pt-4 md:px-4 md:pt-8 lg:gap-8 lg:px-8">
         <Sidebar reports={reports} activeId={report?.id} />
 
         <main className="min-w-0 flex-1">
