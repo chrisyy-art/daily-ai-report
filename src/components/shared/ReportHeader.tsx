@@ -5,14 +5,14 @@ export default function ReportHeader({ title, date, meta }: { title: string; dat
   return (
     <header>
       {date && (
-        <p className="text-sm font-semibold text-primary">
+        <p className="text-[13px] font-semibold text-primary">
           <time dateTime={date}>{formatLongDate(date)}</time>
         </p>
       )}
-      <h1 className="report-title mt-3 text-[28px] font-bold leading-[1.25] tracking-tight text-ink md:text-[40px]">
+      <h1 className="report-title mt-2.5 text-[24px] font-bold leading-[1.3] tracking-tight text-ink md:text-[32px]">
         {title || "（未填写标题）"}
       </h1>
-      {meta && <p className="mt-3 text-sm text-muted">{meta}</p>}
+      {meta && <p className="mt-2.5 text-[13px] text-muted">{meta}</p>}
     </header>
   );
 }

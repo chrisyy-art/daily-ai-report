@@ -25,7 +25,7 @@ export default function MobileReportPicker({
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        className="flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-medium text-fg transition hover:bg-soft"
+        className="flex items-center gap-1 rounded-full px-3 py-1.5 text-[13px] font-medium text-fg transition hover:bg-soft"
       >
         往期
         <svg viewBox="0 0 16 16" className={`h-4 w-4 transition ${open ? "rotate-180" : ""}`} aria-hidden>

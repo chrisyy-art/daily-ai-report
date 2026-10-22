@@ -14,7 +14,7 @@ import ViewTracker from "./ViewTracker";
 function TopBar({ reports, activeId, theme }: { reports: ReportListEntry[]; activeId?: number; theme: ReaderTheme }) {
   return (
     <header className="reader-topbar sticky top-0 z-40 border-b border-line bg-surface">
-      <div className="relative mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-4 px-4 lg:px-8">
+      <div className="relative mx-auto flex h-14 max-w-[1200px] items-center justify-between gap-4 px-4 lg:px-8">
         <Link href="/" className="min-w-0">
           <Logo />
         </Link>
@@ -56,7 +56,7 @@ export default function ReaderView({ reports, report }: { reports: ReportListEnt
       <div aria-hidden className="reader-glow pointer-events-none absolute inset-x-0 top-0 h-[640px] overflow-hidden" />
       <TopBar reports={reports} activeId={report?.id} theme={theme} />
 
-      <div className="relative mx-auto flex w-full max-w-[1200px] flex-1 gap-6 px-3 pt-4 md:px-4 md:pt-8 lg:gap-8 lg:px-8">
+      <div className="relative mx-auto flex w-full max-w-[1200px] flex-1 gap-6 px-3 pt-4 md:px-4 md:pt-6 lg:gap-6 lg:px-8">
         <Sidebar reports={reports} activeId={report?.id} />
 
         <main className="min-w-0 flex-1">

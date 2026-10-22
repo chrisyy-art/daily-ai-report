@@ -30,13 +30,13 @@ export default function SectionTabs({ tabs, panels, stickyTop }: Props) {
   return (
     <>
       <div ref={anchorRef} />
-      <div className="section-tabs-bar sticky z-30 rounded-t-[20px] bg-surface px-5 md:rounded-t-3xl md:px-10" style={{ top: stickyTop }}>
+      <div className="section-tabs-bar sticky z-30 rounded-t-[20px] bg-surface px-5 md:rounded-t-3xl md:px-8" style={{ top: stickyTop }}>
         {/* 手机上 5 个 Tab 放不下时可左右滑动，右侧渐隐提示还有内容 */}
         <span aria-hidden className="pointer-events-none absolute inset-y-0 right-5 z-10 w-10 bg-gradient-to-l from-surface sm:hidden" />
         <div
           role="tablist"
           aria-label="新闻板块"
-          className="flex gap-6 overflow-x-auto border-b border-line pr-8 [scrollbar-width:none] sm:gap-7 sm:pr-0 md:gap-9"
+          className="flex gap-5 overflow-x-auto border-b border-line pr-8 [scrollbar-width:none] sm:gap-6 sm:pr-0 md:gap-8"
         >
           {tabs.map((tab, i) => {
             const selected = i === current;
@@ -49,7 +49,7 @@ export default function SectionTabs({ tabs, panels, stickyTop }: Props) {
                 aria-selected={selected}
                 aria-controls="section-panel"
                 onClick={() => select(i)}
-                className={`relative flex shrink-0 items-center gap-1.5 whitespace-nowrap py-4 text-[15px] font-medium transition md:py-5 md:text-base ${
+                className={`relative flex shrink-0 items-center gap-1.5 whitespace-nowrap py-3.5 text-sm font-medium transition md:py-4 md:text-[15px] ${
                   selected ? "text-primary" : "text-muted hover:text-ink"
                 }`}
               >

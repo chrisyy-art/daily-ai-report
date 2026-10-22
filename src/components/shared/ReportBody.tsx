@@ -19,17 +19,17 @@ type Props = {
  * 没有 "use client"：前台在服务端渲染好所有内容，浏览器端只负责切换 Tab；
  * 后台编辑器（客户端组件）引用时则在浏览器里实时渲染，两边展示完全一致。
  */
-export default function ReportBody({ title, date, content, stickyTop = 64 }: Props) {
+export default function ReportBody({ title, date, content, stickyTop = 56 }: Props) {
   const { intro: lead, sections } = parseReport(content);
   const buckets = assignToTabs(sections, SECTION_TABS);
   const total = buckets.reduce((n, b) => n + b.length, 0);
 
   return (
     <article className="space-y-4 md:space-y-5">
-      <section className="panel panel-hero px-5 py-7 md:px-10 md:py-10">
+      <section className="panel panel-hero px-5 py-6 md:px-8 md:py-8">
         <ReportHeader title={title} date={date} meta={total > 0 ? `共 ${total} 条资讯` : undefined} />
         {lead && (
-          <div className="lead mt-6 rounded-2xl border border-primary/10 bg-gradient-to-r from-sky-soft to-sky-soft/30 px-5 py-4 md:mt-8 md:px-6 md:py-5">
+          <div className="lead mt-5 rounded-2xl border border-primary/10 bg-gradient-to-r from-sky-soft to-sky-soft/30 px-4 py-3.5 md:mt-6 md:px-5 md:py-4">
             <Markdown content={lead} />
           </div>
         )}
@@ -42,10 +42,10 @@ export default function ReportBody({ title, date, content, stickyTop = 64 }: Pro
           tabs={SECTION_TABS.map((tab, i) => ({ label: tab.label, count: buckets[i].length }))}
           panels={buckets.map((items, ti) =>
             items.length > 0 ? (
-              <ol key={ti} className="divide-y divide-line px-5 md:px-10">
+              <ol key={ti} className="divide-y divide-line px-5 md:px-8">
                 {items.map((item, i) => (
-                  <li key={i} className="news-item grid grid-cols-[2rem_1fr] gap-x-3 py-6 md:grid-cols-[2.75rem_1fr] md:py-7">
-                    <span className="pt-0.5 text-sm font-semibold tabular-nums text-primary md:text-[15px]">
+                  <li key={i} className="news-item grid grid-cols-[1.75rem_1fr] gap-x-3 py-5 md:grid-cols-[2.25rem_1fr] md:py-6">
+                    <span className="pt-0.5 text-[13px] font-semibold tabular-nums text-primary">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <div className="min-w-0">

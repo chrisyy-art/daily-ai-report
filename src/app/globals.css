@@ -96,11 +96,11 @@
 
 /* ===== Markdown 正文 ===== */
 .md-body {
-  @apply text-[15px] leading-[1.8] text-fg md:text-base;
+  @apply text-[14px] leading-[1.75] text-fg;
   word-break: break-word;
 }
 .md-body > * + * {
-  @apply mt-4;
+  @apply mt-3.5;
 }
 .md-body h1,
 .md-body h2,
@@ -108,14 +108,14 @@
 .md-body h4 {
   @apply font-bold tracking-tight text-ink;
 }
-.md-body h1 { @apply mt-10 text-2xl; }
-.md-body h2 { @apply mt-10 flex items-center gap-2.5 text-lg; }
+.md-body h1 { @apply mt-8 text-xl; }
+.md-body h2 { @apply mt-8 flex items-center gap-2 text-base; }
 .md-body h2::before {
   content: "";
   @apply inline-block h-4 w-1 shrink-0 rounded-full;
   background: linear-gradient(180deg, rgb(var(--primary)), rgb(var(--sky)));
 }
-.md-body h3 { @apply mt-8 text-base; }
+.md-body h3 { @apply mt-6 text-[15px]; }
 .md-body strong { @apply font-semibold text-ink; }
 .md-body a {
   @apply font-medium text-link no-underline transition hover:underline hover:underline-offset-4;
@@ -125,7 +125,7 @@
 }
 .md-body ul { @apply list-disc pl-6; }
 .md-body ol { @apply list-decimal pl-6; }
-.md-body li + li { @apply mt-1.5; }
+.md-body li + li { @apply mt-1; }
 .md-body li::marker { @apply text-primary/70; }
 .md-body hr { @apply my-10 border-line; }
 .md-body img { @apply rounded-2xl border border-line; }
@@ -155,7 +155,7 @@
 
 /* 导语：比正文略大；「本期主线」常写成引用，这里改为主色细竖线 */
 .lead .md-body {
-  @apply text-[16px] leading-[1.85] text-fg md:text-[17px];
+  @apply text-[14px] leading-[1.8] text-fg md:text-[15px];
 }
 .lead .md-body blockquote {
   @apply border-0 p-0 text-fg;
@@ -163,13 +163,13 @@
 
 /* 新闻条目：第一段是标题行，字号更大、颜色更深 */
 .news-item .md-body > p:first-child {
-  @apply text-[16px] leading-[1.6] text-ink md:text-[17px];
+  @apply text-[15px] leading-[1.6] text-ink;
 }
 .news-item .md-body > p:first-child strong {
   @apply font-semibold;
 }
 .news-item .md-body > * + * {
-  @apply mt-3;
+  @apply mt-2.5;
 }
 
 /* ===== 前台深色主题（参考钉钉开发者平台）=====

@@ -12,9 +12,9 @@ export default function Logo({ suffix = "" }: { suffix?: string }) {
         height={256}
         priority
         unoptimized
-        className="h-9 w-auto shrink-0 sm:h-10"
+        className="h-8 w-auto shrink-0 sm:h-9"
       />
-      <span className="truncate text-[15px] font-bold tracking-tight text-ink sm:text-[17px]">
+      <span className="truncate text-[14px] font-bold tracking-tight text-ink sm:text-[15px]">
         {SITE_NAME}
         {suffix}
       </span>
