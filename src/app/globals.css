@@ -42,7 +42,7 @@
 @layer components {
   /* 前台白色内容卡片：细边框、无投影，靠页面底色衬托 */
   .panel {
-    @apply rounded-[20px] border border-line/70 bg-surface shadow-panel md:rounded-3xl;
+    @apply rounded-[20px] border border-line bg-surface md:rounded-3xl;
   }
   /* 标题卡片：右上角浅蓝晕染 */
   .panel-hero {
