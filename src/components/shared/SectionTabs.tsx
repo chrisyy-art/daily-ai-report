@@ -31,10 +31,12 @@ export default function SectionTabs({ tabs, panels, stickyTop }: Props) {
     <>
       <div ref={anchorRef} />
       <div className="sticky z-30 rounded-t-[20px] bg-surface px-5 md:rounded-t-3xl md:px-10" style={{ top: stickyTop }}>
+        {/* 手机上 5 个 Tab 放不下时可左右滑动，右侧渐隐提示还有内容 */}
+        <span aria-hidden className="pointer-events-none absolute inset-y-0 right-5 z-10 w-10 bg-gradient-to-l from-surface sm:hidden" />
         <div
           role="tablist"
           aria-label="新闻板块"
-          className="flex justify-between gap-4 overflow-x-auto border-b border-line [scrollbar-width:none] sm:justify-start sm:gap-7 md:gap-9"
+          className="flex gap-6 overflow-x-auto border-b border-line pr-8 [scrollbar-width:none] sm:gap-7 sm:pr-0 md:gap-9"
         >
           {tabs.map((tab, i) => {
             const selected = i === current;
@@ -53,7 +55,7 @@ export default function SectionTabs({ tabs, panels, stickyTop }: Props) {
               >
                 {tab.label}
                 <span className={`hidden text-xs tabular-nums sm:inline ${selected ? "text-primary/70" : "text-muted/70"}`}>{tab.count}</span>
-                {selected && <span aria-hidden className="absolute inset-x-0 -bottom-px h-[3px] rounded-t-full bg-primary" />}
+                {selected && <span aria-hidden className="absolute inset-x-0 -bottom-px h-[3px] rounded-t-full bg-gradient-to-r from-primary to-sky" />}
               </button>
             );
           })}

@@ -29,6 +29,9 @@
 
   body {
     min-height: 100vh;
+    /* 顶部一抹很淡的蓝，向下过渡到页面底色 */
+    background-image: linear-gradient(180deg, rgb(234 241 252) 0%, rgb(var(--bg)) 420px);
+    background-repeat: no-repeat;
   }
 
   ::selection {
@@ -39,7 +42,13 @@
 @layer components {
   /* 前台白色内容卡片：细边框、无投影，靠页面底色衬托 */
   .panel {
-    @apply rounded-[20px] border border-line bg-surface md:rounded-3xl;
+    @apply rounded-[20px] border border-line/70 bg-surface shadow-panel md:rounded-3xl;
+  }
+  /* 标题卡片：右上角浅蓝晕染 */
+  .panel-hero {
+    background:
+      radial-gradient(110% 140% at 100% 0%, rgb(var(--sky-soft)) 0%, rgb(255 255 255 / 0) 55%),
+      rgb(var(--surface));
   }
 
   /* 白底大圆角卡片：细描边 + 柔和投影 */

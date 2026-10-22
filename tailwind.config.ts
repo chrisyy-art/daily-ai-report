@@ -29,6 +29,8 @@ const config: Config = {
         soft: "0 1px 2px rgb(15 23 42 / 0.04), 0 12px 32px -16px rgb(15 23 42 / 0.14)",
         "soft-sm": "0 1px 2px rgb(15 23 42 / 0.05), 0 4px 12px -6px rgb(15 23 42 / 0.10)",
         "primary-glow": "0 8px 20px -8px rgb(var(--primary) / 0.55)",
+        // 前台卡片：多层柔和投影，近处清晰、远处扩散
+        panel: "0 1px 2px rgb(16 24 40 / 0.04), 0 4px 12px -2px rgb(16 24 40 / 0.04), 0 18px 36px -14px rgb(16 24 40 / 0.12)",
       },
     },
   },

@@ -58,20 +58,30 @@ function splitItems(lines: Line[]): string[] {
 
 const normalize = (s: string) => s.replace(/\s+/g, "").toLowerCase();
 
+type TabSpec = { label: string; aliases?: readonly string[] };
+
+/** 依次按「名称一致 → 名称互相包含 → 包含别名」找板块对应的 Tab */
+function matchTab(label: string, tabs: readonly TabSpec[]): number {
+  const l = normalize(label);
+  const names = tabs.map((t) => normalize(t.label));
+  let i = names.findIndex((n) => n === l);
+  if (i < 0) i = names.findIndex((n) => l.includes(n) || n.includes(l));
+  if (i < 0) i = tabs.findIndex((t) => t.aliases?.some((a) => l.includes(normalize(a))));
+  return i;
+}
+
 /**
  * 把正文里的板块放进固定的 Tab，返回每个 Tab 下的新闻条目。保证任何内容都不会丢：
- * 1. 名称一致（或互相包含）的板块放进对应 Tab；
+ * 1. 能对应上（名称或别名）的板块放进对应 Tab；
  * 2. 对不上的板块按顺序放进还空着的 Tab；
  * 3. 空 Tab 用完后，剩余的板块都并入最后一个 Tab。
  */
-export function assignToTabs(sections: NewsSection[], tabs: readonly string[]): string[][] {
+export function assignToTabs(sections: NewsSection[], tabs: readonly TabSpec[]): string[][] {
   const buckets = tabs.map(() => [] as string[]);
   const unmatched: NewsSection[] = [];
 
   for (const section of sections) {
-    const label = normalize(section.label);
-    let index = tabs.findIndex((t) => normalize(t) === label);
-    if (index < 0) index = tabs.findIndex((t) => label.includes(normalize(t)) || normalize(t).includes(label));
+    const index = matchTab(section.label, tabs);
     if (index >= 0) buckets[index].push(...section.items);
     else unmatched.push(section);
   }

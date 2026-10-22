@@ -13,7 +13,7 @@ type Props = {
 };
 
 /**
- * 日报主体：标题卡片（日期、标题、导语）+ 新闻卡片（顶部 4 个板块 Tab，下方新闻用细线分隔）。
+ * 日报主体：标题卡片（日期、标题、导语）+ 新闻卡片（顶部板块 Tab，下方新闻用细线分隔）。
  * 正文里的 ## 板块按名称对应到固定 Tab（见 SECTION_TABS），对不上的按顺序补位，任何内容都不会丢。
  *
  * 没有 "use client"：前台在服务端渲染好所有内容，浏览器端只负责切换 Tab；
@@ -26,10 +26,10 @@ export default function ReportBody({ title, date, content, stickyTop = 64 }: Pro
 
   return (
     <article className="space-y-4 md:space-y-5">
-      <section className="panel px-5 py-7 md:px-10 md:py-10">
+      <section className="panel panel-hero px-5 py-7 md:px-10 md:py-10">
         <ReportHeader title={title} date={date} meta={total > 0 ? `共 ${total} 条资讯` : undefined} />
         {lead && (
-          <div className="lead mt-6 rounded-2xl bg-sky-soft/70 px-5 py-4 md:mt-8 md:px-6 md:py-5">
+          <div className="lead mt-6 rounded-2xl border border-primary/10 bg-gradient-to-r from-sky-soft to-sky-soft/30 px-5 py-4 md:mt-8 md:px-6 md:py-5">
             <Markdown content={lead} />
           </div>
         )}
@@ -39,7 +39,7 @@ export default function ReportBody({ title, date, content, stickyTop = 64 }: Pro
       <section className="panel">
         <SectionTabs
           stickyTop={stickyTop}
-          tabs={SECTION_TABS.map((label, i) => ({ label, count: buckets[i].length }))}
+          tabs={SECTION_TABS.map((tab, i) => ({ label: tab.label, count: buckets[i].length }))}
           panels={buckets.map((items, ti) =>
             items.length > 0 ? (
               <ol key={ti} className="divide-y divide-line px-5 md:px-10">

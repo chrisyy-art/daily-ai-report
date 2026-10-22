@@ -7,7 +7,7 @@ const reports = [
   {
     date: "2026-10-19",
     title: "全球AI资讯日报",
-    summary: "示例：按「AI模型 / AI应用 / 算力与MaaS / AI硬件」四个板块组织的日报。",
+    summary: "示例：按「AI模型 / AI应用 / 算力与MaaS / AI硬件 / 资本与并购」五个板块组织的日报。",
     published: true,
     content: `> 本期主线（示例内容）：DeepSeek 发布 V4.1-Flash 小版本更新并开放自研搜索 API；Google 开源 Agent 评测框架 Harness。企业应用侧，多家厂商推进 Agent 落地；算力侧，云厂商继续下调推理价格。
 
@@ -35,6 +35,12 @@ const reports = [
 - 主流模型的输入 / 输出价格平均下调约三成。
 
 ## AI硬件
+
+**【某厂商发布新一代端侧 AI 芯片】**（示例来源，10月19日｜[链接](https://example.com/source)）
+
+- 面向手机与 PC 的端侧推理芯片，官方称能效较上一代提升约 40%。
+
+## 资本与并购
 
 **【AI 芯片公司完成 E 轮融资】**（Axios，10月19日｜[链接](https://example.com/source)）
 
