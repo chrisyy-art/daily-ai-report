@@ -11,7 +11,7 @@ type Props = {
   stickyTop: number;
 };
 
-/** 板块 Tab（下划线样式，滚动时吸顶）：只负责切换显示，各板块内容由调用方渲染好传入 */
+/** 板块 Tab（放在新闻卡片顶部，下划线样式，滚动时吸顶）：只负责切换显示，各板块内容由调用方渲染好传入 */
 export default function SectionTabs({ tabs, panels, stickyTop }: Props) {
   const [active, setActive] = useState(0);
   const anchorRef = useRef<HTMLDivElement>(null);
@@ -29,12 +29,12 @@ export default function SectionTabs({ tabs, panels, stickyTop }: Props) {
 
   return (
     <>
-      <div ref={anchorRef} className="mt-10 md:mt-12" />
-      <div className="sticky z-30 -mx-4 bg-surface px-4 md:mx-0 md:px-0" style={{ top: stickyTop }}>
+      <div ref={anchorRef} />
+      <div className="sticky z-30 rounded-t-[20px] bg-surface px-5 md:rounded-t-3xl md:px-10" style={{ top: stickyTop }}>
         <div
           role="tablist"
           aria-label="新闻板块"
-          className="flex gap-6 overflow-x-auto border-b border-line [scrollbar-width:none] md:gap-9"
+          className="flex justify-between gap-4 overflow-x-auto border-b border-line [scrollbar-width:none] sm:justify-start sm:gap-7 md:gap-9"
         >
           {tabs.map((tab, i) => {
             const selected = i === current;
@@ -47,12 +47,12 @@ export default function SectionTabs({ tabs, panels, stickyTop }: Props) {
                 aria-selected={selected}
                 aria-controls="section-panel"
                 onClick={() => select(i)}
-                className={`relative flex shrink-0 items-center gap-1.5 whitespace-nowrap py-3.5 text-[15px] font-medium transition md:py-4 md:text-base ${
+                className={`relative flex shrink-0 items-center gap-1.5 whitespace-nowrap py-4 text-[15px] font-medium transition md:py-5 md:text-base ${
                   selected ? "text-primary" : "text-muted hover:text-ink"
                 }`}
               >
                 {tab.label}
-                <span className={`text-xs tabular-nums ${selected ? "text-primary/70" : "text-muted/70"}`}>{tab.count}</span>
+                <span className={`hidden text-xs tabular-nums sm:inline ${selected ? "text-primary/70" : "text-muted/70"}`}>{tab.count}</span>
                 {selected && <span aria-hidden className="absolute inset-x-0 -bottom-px h-[3px] rounded-t-full bg-primary" />}
               </button>
             );

@@ -13,8 +13,8 @@ type Props = {
 };
 
 /**
- * 日报主体：标题区 + 导语，下方固定 4 个板块 Tab（见 SECTION_TABS），每条新闻之间用细线分隔。
- * 正文里的 ## 板块按名称对应到 Tab，对不上的按顺序补位，任何内容都不会丢。
+ * 日报主体：标题卡片（日期、标题、导语）+ 新闻卡片（顶部 4 个板块 Tab，下方新闻用细线分隔）。
+ * 正文里的 ## 板块按名称对应到固定 Tab（见 SECTION_TABS），对不上的按顺序补位，任何内容都不会丢。
  *
  * 没有 "use client"：前台在服务端渲染好所有内容，浏览器端只负责切换 Tab；
  * 后台编辑器（客户端组件）引用时则在浏览器里实时渲染，两边展示完全一致。
@@ -25,37 +25,41 @@ export default function ReportBody({ title, date, content, stickyTop = 64 }: Pro
   const total = buckets.reduce((n, b) => n + b.length, 0);
 
   return (
-    <article>
-      <ReportHeader title={title} date={date} meta={total > 0 ? `共 ${total} 条资讯` : undefined} />
-
-      {lead && (
-        <div className="lead mt-8 md:mt-10">
-          <Markdown content={lead} />
-        </div>
-      )}
-
-      <SectionTabs
-        stickyTop={stickyTop}
-        tabs={SECTION_TABS.map((label, i) => ({ label, count: buckets[i].length }))}
-        panels={buckets.map((items, ti) =>
-          items.length > 0 ? (
-            <ol key={ti} className="divide-y divide-line">
-              {items.map((item, i) => (
-                <li key={i} className="news-item grid grid-cols-[2rem_1fr] gap-x-3 py-7 md:grid-cols-[2.75rem_1fr] md:py-8">
-                  <span className="pt-0.5 text-sm font-semibold tabular-nums text-primary md:text-[15px]">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <div className="min-w-0">
-                    <Markdown content={item} />
-                  </div>
-                </li>
-              ))}
-            </ol>
-          ) : (
-            <p key={ti} className="py-20 text-center text-sm text-muted">本板块暂无内容</p>
-          ),
+    <article className="space-y-4 md:space-y-5">
+      <section className="panel px-5 py-7 md:px-10 md:py-10">
+        <ReportHeader title={title} date={date} meta={total > 0 ? `共 ${total} 条资讯` : undefined} />
+        {lead && (
+          <div className="lead mt-6 rounded-2xl bg-sky-soft/70 px-5 py-4 md:mt-8 md:px-6 md:py-5">
+            <Markdown content={lead} />
+          </div>
         )}
-      />
+      </section>
+
+      {/* 不加 overflow-hidden，否则 Tab 无法吸顶 */}
+      <section className="panel">
+        <SectionTabs
+          stickyTop={stickyTop}
+          tabs={SECTION_TABS.map((label, i) => ({ label, count: buckets[i].length }))}
+          panels={buckets.map((items, ti) =>
+            items.length > 0 ? (
+              <ol key={ti} className="divide-y divide-line px-5 md:px-10">
+                {items.map((item, i) => (
+                  <li key={i} className="news-item grid grid-cols-[2rem_1fr] gap-x-3 py-6 md:grid-cols-[2.75rem_1fr] md:py-7">
+                    <span className="pt-0.5 text-sm font-semibold tabular-nums text-primary md:text-[15px]">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <div className="min-w-0">
+                      <Markdown content={item} />
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <p key={ti} className="py-20 text-center text-sm text-muted">本板块暂无内容</p>
+            ),
+          )}
+        />
+      </section>
     </article>
   );
 }

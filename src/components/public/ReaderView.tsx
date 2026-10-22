@@ -25,7 +25,7 @@ function TopBar({ reports, activeId }: { reports: ReportListEntry[]; activeId?: 
 function SiteFooter() {
   const icp = process.env.ICP_NUMBER;
   return (
-    <footer className="mt-20 border-t border-line">
+    <footer className="mt-12 border-t border-line">
       <div className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-2 px-4 py-6 text-xs text-muted lg:px-8">
         <p>
           © {new Date().getFullYear()} {SITE_NAME}
@@ -46,17 +46,17 @@ export default function ReaderView({ reports, report }: { reports: ReportListEnt
     <div className="flex min-h-screen flex-col">
       <TopBar reports={reports} activeId={report?.id} />
 
-      <div className="mx-auto flex w-full max-w-[1200px] flex-1 gap-14 px-4 pt-8 md:pt-12 lg:px-8">
+      <div className="mx-auto flex w-full max-w-[1200px] flex-1 gap-6 px-3 pt-4 md:px-4 md:pt-8 lg:gap-8 lg:px-8">
         <Sidebar reports={reports} activeId={report?.id} />
 
-        <main className="min-w-0 max-w-[800px] flex-1">
+        <main className="min-w-0 flex-1">
           {report ? (
             <>
               <ViewTracker reportId={report.id} />
               <ReportBody key={report.id} title={report.title} date={report.date} content={report.content} />
             </>
           ) : (
-            <p className="py-24 text-center text-muted">还没有发布任何日报，敬请期待。</p>
+            <p className="panel py-24 text-center text-muted">还没有发布任何日报，敬请期待。</p>
           )}
         </main>
       </div>

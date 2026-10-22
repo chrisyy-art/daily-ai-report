@@ -466,7 +466,7 @@ export default function ReportEditor({ id, initial, initialPublished = false, in
           <div className="sticky top-0 z-10 border-b border-line/80 bg-surface/90 px-5 py-2 text-[11px] font-semibold tracking-[0.3em] text-muted backdrop-blur">
             PREVIEW
           </div>
-          <div className="px-5 py-6 md:px-8 md:py-8">
+          <div className="bg-bg p-3 md:p-4">
             <ReportBody
               title={values.title}
               date={values.date}

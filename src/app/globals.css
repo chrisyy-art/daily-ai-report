@@ -5,7 +5,7 @@
 /* ===== 主题变量（RGB 三元组，便于 Tailwind 叠加透明度）===== */
 :root {
   /* 中性色参考 Google Material 灰阶；主色先沿用科技蓝，拿到「白模版」后在这里统一替换 */
-  --bg: 255 255 255;        /* #FFFFFF 页面底色 */
+  --bg: 245 247 251;        /* #F5F7FB 页面底色：浅灰蓝 */
   --surface: 255 255 255;   /* 卡片白 */
   --ink: 32 33 36;          /* #202124 标题 */
   --fg: 60 64 67;           /* #3C4043 正文 */
@@ -37,6 +37,11 @@
 }
 
 @layer components {
+  /* 前台白色内容卡片：细边框、无投影，靠页面底色衬托 */
+  .panel {
+    @apply rounded-[20px] border border-line bg-surface md:rounded-3xl;
+  }
+
   /* 白底大圆角卡片：细描边 + 柔和投影 */
   .card {
     @apply rounded-3xl border border-line/80 bg-surface shadow-soft;
@@ -144,7 +149,7 @@
   @apply text-[16px] leading-[1.85] text-fg md:text-[17px];
 }
 .lead .md-body blockquote {
-  @apply border-l-[3px] border-primary pl-5 text-fg;
+  @apply border-0 p-0 text-fg;
 }
 
 /* 新闻条目：第一段是标题行，字号更大、颜色更深 */
