@@ -1,43 +1,35 @@
-import { cookies } from "next/headers";
 import Link from "next/link";
 import ReportBody from "@/components/shared/ReportBody";
 import Logo from "@/components/ui/Logo";
 import type { Report, ReportListEntry } from "@/lib/reports";
 import { SITE_NAME } from "@/lib/site";
-import { parseTheme, THEME_COOKIE, type ReaderTheme } from "@/lib/theme";
+import type { ReaderTheme } from "@/lib/theme";
 import MobileReportPicker from "./MobileReportPicker";
 import Sidebar from "./Sidebar";
 import BannerGrid from "./BannerGrid";
-import ThemeSwitch from "./ThemeSwitch";
 import ViewTracker from "./ViewTracker";
 
-/** 顶栏：Logo + 站点名，右侧风格切换；移动端右侧还有「往期」目录。P 风格在电脑上隐藏（由横幅代替） */
-function TopBar({ reports, activeId, theme }: { reports: ReportListEntry[]; activeId?: number; theme: ReaderTheme }) {
+/** 顶栏（浅色、深色版式）：Logo + 站点名；移动端右侧是「往期」目录。P 版式不显示顶栏 */
+function TopBar({ reports, activeId }: { reports: ReportListEntry[]; activeId?: number }) {
   return (
     <header className="reader-topbar sticky top-0 z-40 border-b border-line bg-surface">
       <div className="relative mx-auto flex h-14 max-w-[1200px] items-center justify-between gap-4 px-4 lg:px-8">
         <Link href="/" className="min-w-0">
           <Logo />
         </Link>
-        <div className="flex items-center gap-1">
-          <ThemeSwitch initial={theme} />
-          <MobileReportPicker reports={reports} activeId={activeId} />
-        </div>
+        <MobileReportPicker reports={reports} activeId={activeId} />
       </div>
     </header>
   );
 }
 
 /** P 风格的顶部横幅：动态方格背景 + 栏目标题（其他风格隐藏） */
-function Banner({ theme }: { theme: ReaderTheme }) {
+function Banner() {
   return (
     <section className="reader-banner relative overflow-hidden border-b border-line">
       <BannerGrid />
       <div aria-hidden className="banner-deco pointer-events-none absolute right-0 top-0 z-[2]" />
       <div className="relative z-[3] mx-auto max-w-[1112px] px-6">
-        <div className="absolute right-4 top-4">
-          <ThemeSwitch initial={theme} />
-        </div>
         <div className="banner-inner text-center">
           <span className="banner-pill">数科行研中心 · Daily AI</span>
           <h2 className="banner-title">
@@ -70,15 +62,15 @@ function SiteFooter() {
 }
 
 /** 对客阅读端整体布局：顶栏（P 风格为横幅）+ 左侧往期目录 + 右侧正文 */
-export default function ReaderView({ reports, report }: { reports: ReportListEntry[]; report: Report | null }) {
-  const theme = parseTheme(cookies().get(THEME_COOKIE)?.value);
+type Props = { reports: ReportListEntry[]; report: Report | null; theme: ReaderTheme };
 
+export default function ReaderView({ reports, report, theme }: Props) {
   return (
     <div data-reader data-theme={theme} className="reader relative flex min-h-screen flex-col">
       {/* 深色主题下的背景光效（浅色主题隐藏） */}
       <div aria-hidden className="reader-glow pointer-events-none absolute inset-x-0 top-0 h-[640px] overflow-hidden" />
-      <TopBar reports={reports} activeId={report?.id} theme={theme} />
-      <Banner theme={theme} />
+      <TopBar reports={reports} activeId={report?.id} />
+      <Banner />
 
       <div className="reader-main relative mb-12 mx-auto flex w-full max-w-[1200px] gap-6 px-3 pt-4 md:px-4 md:pt-6 lg:gap-6 lg:px-8">
         <Sidebar reports={reports} activeId={report?.id} />

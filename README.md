@@ -103,7 +103,7 @@ npm run dev        # http://localhost:3000
 
 ## 前台主题
 
-前台有三套风格，读者可点右上角的「P / ☀ / ☾」切换，选择会记在浏览器里：
+前台有三套版式，**不向读者提供切换按钮**，全站统一显示一套（默认 P）：
 
 | 风格 | 说明 |
 |---|---|
@@ -111,7 +111,9 @@ npm run dev        # http://localhost:3000
 | 浅色 | 浅灰蓝底 + 白色卡片 + 顶栏 |
 | 深色 | 参考钉钉开发者平台：近黑底、卡片蓝色光晕 |
 
-- 默认风格在 `src/lib/theme.ts` 的 `DEFAULT_THEME` 中修改；横幅文字在 `src/components/public/ReaderView.tsx` 的 `Banner` 中修改。
+- **更换全站版式**：在服务器 `.env` 中加一行 `READER_THEME=light`（或 `dark`、`p`），然后执行 `pm2 restart daily-ai`。
+- **临时预览其他版式**：在网址后加 `?theme=light` 或 `?theme=dark`，例如 `https://你的域名/?theme=dark`，只影响当前页面。
+- 横幅文字在 `src/components/public/ReaderView.tsx` 的 `Banner` 中修改。
 - 三套风格共用同一套页面结构，颜色变量分别定义在 `src/app/globals.css` 的 `:root`（浅色）、`.reader[data-theme="dark"]`、`.reader[data-theme="p"]` 中。
 - 后台始终为浅色。
 
