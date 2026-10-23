@@ -22,7 +22,7 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-sans)", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "system-ui", "sans-serif"],
-        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "PingFang SC", "monospace"],
+        mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "PingFang SC", "monospace"],
       },
       boxShadow: {
         // 柔和投影：卡片、浮层、主按钮

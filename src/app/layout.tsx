@@ -12,6 +12,17 @@ const sans = localFont({
   display: "swap",
 });
 
+// 等宽字体：日期、序号、标签等（P 风格大量使用），同样随项目提供
+const mono = localFont({
+  src: [
+    { path: "./fonts/ibm-plex-mono-400.woff2", weight: "400" },
+    { path: "./fonts/ibm-plex-mono-500.woff2", weight: "500" },
+    { path: "./fonts/ibm-plex-mono-600.woff2", weight: "600" },
+  ],
+  variable: "--font-mono",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: SITE_NAME,
   description: "每天几分钟，跟上 AI 行业的重要动态。",
@@ -19,7 +30,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="zh-CN" className={sans.variable}>
+    <html lang="zh-CN" className={`${sans.variable} ${mono.variable}`}>
       <body>{children}</body>
     </html>
   );

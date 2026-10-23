@@ -33,18 +33,17 @@ function Banner({ theme }: { theme: ReaderTheme }) {
   return (
     <section className="reader-banner relative overflow-hidden border-b border-line">
       <BannerGrid />
-      <div className="relative mx-auto max-w-[1200px] px-4 lg:px-8">
-        <div className="absolute right-4 top-4 hidden lg:right-8 lg:block">
+      <div aria-hidden className="banner-deco pointer-events-none absolute right-0 top-0 z-[2]" />
+      <div className="relative z-[3] mx-auto max-w-[1112px] px-6">
+        <div className="absolute right-4 top-4">
           <ThemeSwitch initial={theme} />
         </div>
-        <div className="flex flex-col items-center py-12 text-center md:py-16">
-          <p className="rounded-full border border-line bg-surface/70 px-3.5 py-1 font-mono text-[11px] tracking-[0.3em] text-muted">
-            DAILY AI BRIEFING
-          </p>
-          <p className="mt-4 text-[30px] font-bold leading-tight tracking-tight text-ink md:text-[40px]">
-            数科每日<span className="text-primary">AI</span>
-          </p>
-          <p className="mt-3 text-sm text-muted md:text-[15px]">追踪全球 AI 前沿动态，洞察产业趋势与商业机会</p>
+        <div className="banner-inner text-center">
+          <span className="banner-pill">数科行研中心 · Daily AI</span>
+          <h2 className="banner-title">
+            每天几分钟，跟上 <em>AI 行业</em>的重要动态
+          </h2>
+          <p className="banner-lede">追踪全球 AI 前沿动态，洞察产业趋势与商业机会</p>
         </div>
       </div>
     </section>
@@ -55,7 +54,7 @@ function Banner({ theme }: { theme: ReaderTheme }) {
 function SiteFooter() {
   const icp = process.env.ICP_NUMBER;
   return (
-    <footer className="relative mt-12 border-t border-line">
+    <footer className="reader-footer relative mt-auto border-t border-line pt-0">
       <div className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-2 px-4 py-6 text-xs text-muted lg:px-8">
         <p>
           © {new Date().getFullYear()} {SITE_NAME}
@@ -81,7 +80,7 @@ export default function ReaderView({ reports, report }: { reports: ReportListEnt
       <TopBar reports={reports} activeId={report?.id} theme={theme} />
       <Banner theme={theme} />
 
-      <div className="relative mx-auto flex w-full max-w-[1200px] flex-1 gap-6 px-3 pt-4 md:px-4 md:pt-6 lg:gap-6 lg:px-8">
+      <div className="reader-main relative mb-12 mx-auto flex w-full max-w-[1200px] gap-6 px-3 pt-4 md:px-4 md:pt-6 lg:gap-6 lg:px-8">
         <Sidebar reports={reports} activeId={report?.id} />
 
         <main className="min-w-0 flex-1">

@@ -161,11 +161,11 @@
   @apply border-0 p-0 text-fg;
 }
 
-/* 新闻条目：第一段是标题行，字号更大、颜色更深 */
-.news-item .md-body > p:first-child {
+/* 新闻条目（未能拆分标题行时）：第一段是标题行，字号更大、颜色更深 */
+.news-item > div > .md-body > p:first-child {
   @apply text-[15px] leading-[1.6] text-ink;
 }
-.news-item .md-body > p:first-child strong {
+.news-item > div > .md-body > p:first-child strong {
   @apply font-semibold;
 }
 .news-item .md-body > * + * {
@@ -250,42 +250,419 @@
   --sticky-top: 56px;
 }
 
-/* ===== 前台 P 风格（参考 P-Max，默认）===== */
-.reader[data-theme="p"] {
-  --bg: 247 247 248;        /* #F7F7F8 中性浅灰底 */
-  --surface: 255 255 255;
-  --ink: 17 17 17;          /* #111111 标题近黑 */
-  --fg: 55 65 81;           /* #374151 正文 */
-  --muted: 107 114 128;     /* #6B7280 次要文字 */
-  --line: 233 234 238;      /* #E9EAEE 细边框 */
-  --soft: 243 244 246;
-  --primary: 22 93 255;     /* #165DFF 主色蓝 */
-  --sky: 64 150 255;        /* #4096FF 浅一档的蓝，用于渐变 */
-  --sky-soft: 236 243 255;
-  --link: 22 93 255;
-  background: rgb(var(--bg));
+/* ===== 新闻条目的标题行 / 来源行（各风格通用，P 风格下方另有覆盖）===== */
+.news-title {
+  @apply text-[15px] font-semibold leading-[1.6] text-ink;
+}
+.news-meta .md-body {
+  @apply mt-0.5 text-xs leading-5 text-muted;
+}
+.news-body {
+  @apply mt-2;
 }
 
-/* 横幅：只在 P 风格显示。浅蓝渐变底 + 方格线（间距与 BannerGrid 的 BANNER_CELL 一致） */
+/* ===== 前台 P 风格（按「每日AI · P-Max」设计稿，默认）=====
+   暖白底、橙红强调色、IBM Plex Mono 等宽字；P-Max 的导航由宿主页面提供，这里不显示自己的顶栏 */
+.reader[data-theme="p"] {
+  --bg: 247 245 242;        /* #F7F5F2 ground */
+  --surface: 255 255 255;   /* #FFFFFF surface */
+  --ink: 23 22 26;          /* #17161A ink */
+  --fg: 106 101 96;         /* #6A6560 ink-2：要点正文 */
+  --muted: 156 149 142;     /* #9C958E ink-3：日期、来源 */
+  --line: 232 227 220;      /* #E8E3DC line */
+  --line-strong: 216 209 199; /* #D8D1C7 */
+  --soft: 251 250 248;      /* #FBFAF8 surface-2 */
+  --primary: 238 75 34;     /* #EE4B22 accent */
+  --accent-ink: 194 58 23;  /* #C23A17 */
+  --sky: 196 116 180;       /* 橙→紫渐变的终点 */
+  --sky-soft: 253 238 231;  /* #FDEEE7 wash */
+  --link: 194 58 23;
+  --sticky-top: 0px;
+  background: rgb(var(--bg));
+  color: rgb(var(--ink));
+  font-size: 15px;
+}
+.reader[data-theme="p"] .reader-topbar {
+  display: none;
+}
+.reader[data-theme="p"] .font-mono,
+.reader[data-theme="p"] .report-date,
+.reader[data-theme="p"] .past-index,
+.reader[data-theme="p"] .past-date,
+.reader[data-theme="p"] .news-no,
+.reader[data-theme="p"] .section-tab-count,
+.reader[data-theme="p"] .report-count b {
+  font-family: var(--font-mono), ui-monospace, monospace;
+}
+
+/* --- 横幅 --- */
 .reader-banner {
   display: none;
 }
 .reader[data-theme="p"] .reader-banner {
   display: block;
-  background-color: rgb(250 252 255);
+  background: linear-gradient(180deg, #fdf5f0 0%, #fcf8f5 62%, rgb(var(--bg)) 100%);
+}
+/* 74px 网格线，压在光格之上 */
+.reader[data-theme="p"] .reader-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
   background-image:
-    linear-gradient(rgb(var(--primary) / 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(var(--primary) / 0.06) 1px, transparent 1px),
-    linear-gradient(180deg, rgb(240 245 255), rgb(250 252 255));
-  background-size: 44px 44px, 44px 44px, 100% 100%;
+    repeating-linear-gradient(to right, rgb(190 150 130 / 0.11) 0 1px, transparent 1px 74px),
+    repeating-linear-gradient(to bottom, rgb(190 150 130 / 0.11) 0 1px, transparent 1px 74px);
+}
+.banner-glow i {
+  position: absolute;
+  width: 74px;
+  height: 74px;
+  background: rgb(var(--primary));
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: opacity;
+}
+/* 右上角固定的橙紫渐变格 */
+.banner-deco {
+  width: 326px;
+  height: 252px;
+  background:
+    repeating-linear-gradient(to right, rgb(255 255 255 / 0.72) 0 1px, transparent 1px 74px),
+    repeating-linear-gradient(to bottom, rgb(255 255 255 / 0.72) 0 1px, transparent 1px 74px),
+    linear-gradient(140deg, rgb(238 75 34 / 0.17) 0%, rgb(196 116 180 / 0.15) 100%);
+  -webkit-mask-image: radial-gradient(135% 130% at 100% 0%, #000 18%, transparent 72%);
+  mask-image: radial-gradient(135% 130% at 100% 0%, #000 18%, transparent 72%);
+}
+.banner-inner {
+  padding-top: 52px;
+  padding-bottom: 46px;
+}
+.banner-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 99px;
+  border: 1px solid rgb(200 170 150 / 0.4);
+  background: rgb(255 255 255 / 0.8);
+  padding: 4px 13px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(var(--muted));
+}
+.banner-title {
+  margin: 18px auto 14px;
+  white-space: nowrap;
+  font-size: clamp(20px, 3.6vw, 40px);
+  font-weight: 700;
+  line-height: 1.28;
+  letter-spacing: -0.02em;
+  color: rgb(var(--ink));
+}
+.banner-title em {
+  font-style: normal;
+  color: rgb(var(--primary));
+}
+.banner-lede {
+  margin: 0 auto;
+  max-width: 640px;
+  font-size: 14.5px;
+  line-height: 1.9;
+  color: rgb(var(--fg));
+}
+@media (prefers-reduced-motion: reduce) {
+  .banner-glow {
+    display: none;
+  }
 }
 
-/* 电脑上 P 风格不显示自己的顶栏（嵌入 P-Max 时由对方的导航代替），吸顶贴到最上方 */
-@media (min-width: 1024px) {
-  .reader[data-theme="p"] {
-    --sticky-top: 0px;
+/* --- 版式：左侧往期 220px + 右侧当期，间距 36px，最大宽 1112px --- */
+.reader[data-theme="p"] .reader-main {
+  max-width: 1112px;
+  gap: 36px;
+  padding: 34px 24px 24px;
+}
+
+/* 往期：不加白框，直接放在底色上 */
+.reader[data-theme="p"] .reader-past {
+  width: 220px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  align-self: flex-start;
+  position: sticky;
+  top: 24px;
+}
+.reader[data-theme="p"] .reader-past-inner {
+  position: static;
+  max-height: none;
+  padding: 0;
+}
+.reader[data-theme="p"] .past-eyebrow {
+  display: block;
+  margin-bottom: 4px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(var(--muted));
+}
+.reader[data-theme="p"] .past-heading {
+  margin: 0 0 12px;
+  padding: 0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: rgb(var(--ink));
+}
+.reader[data-theme="p"] .past-list > li + li {
+  margin-top: 2px;
+}
+.reader[data-theme="p"] .past-item {
+  align-items: baseline;
+  gap: 10px;
+  border-radius: 9px;
+  padding: 9px 10px;
+  background: none;
+}
+.reader[data-theme="p"] .past-item:hover {
+  background: rgb(var(--surface));
+}
+.reader[data-theme="p"] .past-item[aria-current="page"] {
+  background: rgb(var(--surface));
+  box-shadow: inset 3px 0 0 rgb(var(--primary));
+}
+.reader[data-theme="p"] .past-index {
+  width: auto;
+  font-size: 11px;
+  font-weight: 400;
+  color: rgb(var(--muted));
+}
+.reader[data-theme="p"] .past-title {
+  font-size: 13.5px;
+  line-height: 1.5;
+  font-weight: 400;
+  color: rgb(var(--fg));
+}
+.reader[data-theme="p"] .past-item[aria-current="page"] .past-title {
+  font-weight: 600;
+  color: rgb(var(--ink));
+}
+.reader[data-theme="p"] .past-date {
+  margin-top: 0;
+  font-size: 11px;
+  color: rgb(var(--muted));
+}
+
+/* 当期标题区：不加卡片 */
+.reader[data-theme="p"] .report-intro {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  padding: 0;
+}
+.reader[data-theme="p"] .report-date {
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: rgb(var(--muted));
+}
+.reader[data-theme="p"] .report-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 14px;
+  margin-top: 4px;
+}
+.reader[data-theme="p"] .report-title {
+  margin-top: 0;
+  font-size: 28px;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  color: rgb(var(--ink));
+}
+.reader[data-theme="p"] .report-count {
+  margin-top: 0;
+  font-size: 13px;
+  color: rgb(var(--muted));
+}
+.reader[data-theme="p"] .report-count b {
+  color: rgb(var(--ink));
+}
+
+/* 本期主线：浅橙底、左侧橙线 */
+.reader[data-theme="p"] .lead {
+  margin-top: 18px;
+  border: 0;
+  border-left: 3px solid rgb(var(--primary));
+  border-radius: 0 12px 12px 0;
+  background: rgb(var(--sky-soft));
+  padding: 14px 20px;
+}
+.reader[data-theme="p"] .lead .md-body {
+  font-size: 14.5px;
+  line-height: 1.85;
+  color: rgb(var(--ink));
+}
+.reader[data-theme="p"] .lead strong {
+  color: rgb(var(--accent-ink));
+}
+
+/* 分类：胶囊标签（可点击切换），吸顶时以底色衬底 */
+.reader[data-theme="p"] .news-panel {
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+.reader[data-theme="p"] .section-tabs-bar {
+  margin-top: 10px;
+  border-radius: 0;
+  background: rgb(var(--bg));
+  padding: 8px 0 14px;
+}
+.reader[data-theme="p"] .section-tabs-fade,
+.reader[data-theme="p"] .section-tab-line {
+  display: none;
+}
+.reader[data-theme="p"] .section-tablist {
+  flex-wrap: wrap;
+  gap: 8px;
+  border: 0;
+  padding: 0;
+}
+.reader[data-theme="p"] .section-tab {
+  height: 28px;
+  gap: 6px;
+  border: 1px solid rgb(var(--line-strong));
+  border-radius: 99px;
+  background: rgb(var(--surface));
+  padding: 0 12px;
+  font-size: 12.5px;
+  font-weight: 400;
+  color: rgb(var(--fg));
+}
+.reader[data-theme="p"] .section-tab:hover {
+  border-color: rgb(var(--primary) / 0.5);
+  color: rgb(var(--ink));
+}
+.reader[data-theme="p"] .section-tab-count {
+  display: inline;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgb(var(--ink));
+}
+.reader[data-theme="p"] .section-tab[aria-selected="true"] {
+  border-color: rgb(var(--primary));
+  background: rgb(var(--sky-soft));
+  color: rgb(var(--accent-ink));
+  font-weight: 600;
+}
+.reader[data-theme="p"] .section-tab[aria-selected="true"] .section-tab-count {
+  color: rgb(var(--accent-ink));
+}
+
+/* 新闻列表：一张白卡，条目之间细线分隔 */
+.reader[data-theme="p"] .news-list,
+.reader[data-theme="p"] .news-empty {
+  overflow: hidden;
+  border: 1px solid rgb(var(--line));
+  border-radius: 14px;
+  background: rgb(var(--surface));
+  padding: 0;
+}
+.reader[data-theme="p"] .news-empty {
+  padding: 64px 0;
+}
+.reader[data-theme="p"] .news-item {
+  grid-template-columns: 40px minmax(0, 1fr);
+  column-gap: 12px;
+  padding: 16px 22px;
+}
+.reader[data-theme="p"] .news-no {
+  padding-top: 1px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgb(var(--primary));
+}
+.reader[data-theme="p"] .news-title {
+  font-size: 15.5px;
+  line-height: 1.55;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.reader[data-theme="p"] .news-meta .md-body {
+  margin-top: 2px;
+  font-size: 12px;
+  color: rgb(var(--muted));
+}
+.reader[data-theme="p"] .news-meta a {
+  margin-left: 2px;
+  color: rgb(var(--accent-ink));
+}
+.reader[data-theme="p"] .news-body {
+  margin-top: 6px;
+}
+.reader[data-theme="p"] .news-item .md-body ul {
+  padding-left: 18px;
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: rgb(var(--fg));
+}
+.reader[data-theme="p"] .news-item .md-body li::marker {
+  color: rgb(var(--muted));
+}
+
+.reader[data-theme="p"] .reader-footer {
+  border-top: 0;
+  margin-top: 6px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+}
+.reader[data-theme="p"] .reader-footer > div {
+  max-width: 1112px;
+  padding: 30px 24px 52px;
+}
+
+/* --- 窄屏：单列，往期变为顶部可横向滑动的一行 --- */
+@media (max-width: 1023px) {
+  .reader[data-theme="p"] .reader-main {
+    flex-direction: column;
+    gap: 20px;
+    padding: 24px 16px 16px;
   }
-  .reader[data-theme="p"] .reader-topbar {
-    display: none;
+  .reader[data-theme="p"] .reader-past {
+    display: block;
+    position: static;
+    width: auto;
+  }
+  .reader[data-theme="p"] .past-list {
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .reader[data-theme="p"] .past-list > li {
+    flex: 0 0 auto;
+  }
+  .reader[data-theme="p"] .past-list > li + li {
+    margin-top: 0;
+  }
+}
+@media (max-width: 640px) {
+  .reader[data-theme="p"] .news-item {
+    grid-template-columns: 28px minmax(0, 1fr);
+    padding: 14px 16px;
+  }
+  .reader[data-theme="p"] .report-title {
+    font-size: 23px;
+  }
+}
+@media (max-width: 480px) {
+  /* 设计稿标题不换行；窄屏手机放不下时允许换行，避免被裁切 */
+  .banner-title {
+    white-space: normal;
   }
 }

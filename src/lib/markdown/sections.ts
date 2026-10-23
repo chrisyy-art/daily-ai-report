@@ -120,3 +120,35 @@ export function parseReport(markdown: string): ParsedReport {
     sections: sections.map((s) => ({ title: s.title, label: sectionLabel(s.title), items: splitItems(s.lines) })),
   };
 }
+
+export type Headline = {
+  /** 标题文字（不含【】） */
+  title: string;
+  /** 来源行 Markdown，分隔符统一为「 · 」，如「新京报 · 10月22日 · [链接](…)」 */
+  meta: string;
+  /** 标题段之后的正文（要点列表等） */
+  body: string;
+};
+
+const HEADLINE = /^\s*(?:\*\*|__)?\s*【([^】]+)】\s*(?:\*\*|__)?\s*(?:[（(](.*)[）)])?\s*$/s;
+const LINK = /(\[[^\]]*\]\([^)]*\))/;
+
+/** 统一来源行里的分隔符（逗号、竖线），链接本身不动 */
+function normalizeMeta(meta: string): string {
+  return meta
+    .split(LINK)
+    .map((part) => (LINK.test(part) ? part : part.replace(/\s*[，,｜|]\s*/g, " · ")))
+    .join("")
+    .trim();
+}
+
+/**
+ * 把一条新闻拆成「标题 / 来源行 / 正文」，便于分行排版。
+ * 第一段须形如「**【标题】**（来源，日期｜[链接](…)）」；不符合时返回 null，按原样渲染。
+ */
+export function splitHeadline(item: string): Headline | null {
+  const [first, ...rest] = item.split(/\n\s*\n/);
+  const m = first.replace(/\n/g, " ").match(HEADLINE);
+  if (!m) return null;
+  return { title: m[1].trim(), meta: m[2] ? normalizeMeta(m[2]) : "", body: rest.join("\n\n").trim() };
+}

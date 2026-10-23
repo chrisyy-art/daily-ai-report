@@ -26,22 +26,22 @@ export default function ReportListItem({ report, index, href, active, showStatus
       <Link
         href={href}
         aria-current={active ? "page" : undefined}
-        className={`group flex gap-3 rounded-xl px-3 py-2 transition ${
+        className={`past-item group flex gap-3 rounded-xl px-3 py-2 transition ${
           active ? "bg-gradient-to-r from-sky-soft to-sky-soft/40" : "hover:bg-soft"
         }`}
       >
-        <span className={`w-5 shrink-0 pt-px text-xs font-semibold tabular-nums ${active ? "text-primary" : "text-muted"}`}>
+        <span className={`past-index w-5 shrink-0 pt-px text-xs font-semibold tabular-nums ${active ? "text-primary" : "text-muted"}`}>
           {String(index).padStart(2, "0")}
         </span>
         <span className="min-w-0">
           <span
-            className={`line-clamp-2 text-[13px] leading-snug ${
+            className={`past-title line-clamp-2 text-[13px] leading-snug ${
               active ? "font-semibold text-ink" : "text-fg group-hover:text-ink"
             }`}
           >
             {report.title}
           </span>
-          <span className={`mt-0.5 block text-xs ${active ? "text-primary/80" : "text-muted"}`}>{formatChineseDate(report.date)}</span>
+          <span className={`past-date mt-0.5 block text-xs ${active ? "text-primary/80" : "text-muted"}`}>{formatChineseDate(report.date)}</span>
         </span>
       </Link>
     );

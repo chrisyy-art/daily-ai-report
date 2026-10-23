@@ -1,7 +1,7 @@
 import Markdown from "./Markdown";
 import ReportHeader from "./ReportHeader";
 import SectionTabs from "./SectionTabs";
-import { assignToTabs, parseReport } from "@/lib/markdown/sections";
+import { assignToTabs, parseReport, splitHeadline } from "@/lib/markdown/sections";
 import { SECTION_TABS } from "@/lib/site";
 
 type Props = {
@@ -19,15 +19,39 @@ type Props = {
  * 没有 "use client"：前台在服务端渲染好所有内容，浏览器端只负责切换 Tab；
  * 后台编辑器（客户端组件）引用时则在浏览器里实时渲染，两边展示完全一致。
  */
+/** 一条新闻：能识别「【标题】（来源…）」时拆成标题行 + 来源行 + 要点，否则按原样渲染 */
+function NewsItem({ item }: { item: string }) {
+  const h = splitHeadline(item);
+  if (!h) return <Markdown content={item} />;
+  return (
+    <>
+      <h3 className="news-title">【{h.title}】</h3>
+      {h.meta && (
+        <div className="news-meta">
+          <Markdown content={h.meta} />
+        </div>
+      )}
+      {h.body && (
+        <div className="news-body">
+          <Markdown content={h.body} />
+        </div>
+      )}
+    </>
+  );
+}
+
 export default function ReportBody({ title, date, content, stickyTop }: Props) {
-  const { intro: lead, sections } = parseReport(content);
+  const parsed = parseReport(content);
+  const sections = parsed.sections;
+  // 「本期主线：」没加粗时自动加粗，各风格都以强调色显示
+  const lead = parsed.intro.replace(/^(>\s*)?(本期主线\s*[:：])/, "$1**$2**");
   const buckets = assignToTabs(sections, SECTION_TABS);
   const total = buckets.reduce((n, b) => n + b.length, 0);
 
   return (
     <article className="space-y-4 md:space-y-5">
-      <section className="panel panel-hero px-5 py-6 md:px-8 md:py-8">
-        <ReportHeader title={title} date={date} meta={total > 0 ? `共 ${total} 条资讯` : undefined} />
+      <section className="report-intro panel panel-hero px-5 py-6 md:px-8 md:py-8">
+        <ReportHeader title={title} date={date} count={total} />
         {lead && (
           <div className="lead mt-5 rounded-2xl border border-primary/10 bg-gradient-to-r from-sky-soft to-sky-soft/30 px-4 py-3.5 md:mt-6 md:px-5 md:py-4">
             <Markdown content={lead} />
@@ -36,26 +60,26 @@ export default function ReportBody({ title, date, content, stickyTop }: Props) {
       </section>
 
       {/* 不加 overflow-hidden，否则 Tab 无法吸顶 */}
-      <section className="panel">
+      <section className="news-panel panel">
         <SectionTabs
           stickyTop={stickyTop}
           tabs={SECTION_TABS.map((tab, i) => ({ label: tab.label, count: buckets[i].length }))}
           panels={buckets.map((items, ti) =>
             items.length > 0 ? (
-              <ol key={ti} className="divide-y divide-line px-5 md:px-8">
+              <ol key={ti} className="news-list divide-y divide-line px-5 md:px-8">
                 {items.map((item, i) => (
                   <li key={i} className="news-item grid grid-cols-[1.75rem_1fr] gap-x-3 py-5 md:grid-cols-[2.25rem_1fr] md:py-6">
-                    <span className="pt-0.5 text-[13px] font-semibold tabular-nums text-primary">
+                    <span className="news-no pt-0.5 text-[13px] font-semibold tabular-nums text-primary">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <div className="min-w-0">
-                      <Markdown content={item} />
+                      <NewsItem item={item} />
                     </div>
                   </li>
                 ))}
               </ol>
             ) : (
-              <p key={ti} className="py-20 text-center text-sm text-muted">本板块暂无内容</p>
+              <p key={ti} className="news-empty py-20 text-center text-sm text-muted">本板块暂无内容</p>
             ),
           )}
         />

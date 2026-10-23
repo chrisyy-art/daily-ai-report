@@ -7,9 +7,10 @@ import type { ReportListEntry } from "@/lib/reports";
  */
 export default function Sidebar({ reports, activeId }: { reports: ReportListEntry[]; activeId?: number }) {
   return (
-    <aside className="panel hidden w-[256px] shrink-0 lg:block">
-      <div className="sticky top-[calc(var(--sticky-top)+12px)] flex max-h-[calc(100vh-var(--sticky-top)-24px)] flex-col p-3">
-        <h2 className="px-3 pb-2 pt-2 text-xs font-semibold tracking-[0.12em] text-muted">往期日报</h2>
+    <aside className="reader-past panel hidden w-[256px] shrink-0 lg:block">
+      <div className="reader-past-inner sticky top-[calc(var(--sticky-top)+12px)] flex max-h-[calc(100vh-var(--sticky-top)-24px)] flex-col p-3">
+        <span className="past-eyebrow hidden">往期</span>
+        <h2 className="past-heading px-3 pb-2 pt-2 text-xs font-semibold tracking-[0.12em] text-muted">往期日报</h2>
         <nav className="overflow-y-auto [scrollbar-width:thin]" aria-label="往期日报">
           <ReportList reports={reports} activeId={activeId} variant="plain" hrefFor={(r) => `/report/${r.date}`} />
         </nav>

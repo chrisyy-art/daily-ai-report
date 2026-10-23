@@ -38,11 +38,11 @@ export default function SectionTabs({ tabs, panels, stickyTop }: Props) {
         style={{ top: stickyTop ?? "var(--sticky-top, 56px)" }}
       >
         {/* 手机上 5 个 Tab 放不下时可左右滑动，右侧渐隐提示还有内容 */}
-        <span aria-hidden className="pointer-events-none absolute inset-y-0 right-5 z-10 w-10 bg-gradient-to-l from-surface sm:hidden" />
+        <span aria-hidden className="section-tabs-fade pointer-events-none absolute inset-y-0 right-5 z-10 w-10 bg-gradient-to-l from-surface sm:hidden" />
         <div
           role="tablist"
           aria-label="新闻板块"
-          className="flex gap-5 overflow-x-auto border-b border-line pr-8 [scrollbar-width:none] sm:gap-6 sm:pr-0 md:gap-8"
+          className="section-tablist flex gap-5 overflow-x-auto border-b border-line pr-8 [scrollbar-width:none] sm:gap-6 sm:pr-0 md:gap-8"
         >
           {tabs.map((tab, i) => {
             const selected = i === current;
@@ -55,13 +55,13 @@ export default function SectionTabs({ tabs, panels, stickyTop }: Props) {
                 aria-selected={selected}
                 aria-controls="section-panel"
                 onClick={() => select(i)}
-                className={`relative flex shrink-0 items-center gap-1.5 whitespace-nowrap py-3.5 text-sm font-medium transition md:py-4 md:text-[15px] ${
+                className={`section-tab relative flex shrink-0 items-center gap-1.5 whitespace-nowrap py-3.5 text-sm font-medium transition md:py-4 md:text-[15px] ${
                   selected ? "text-primary" : "text-muted hover:text-ink"
                 }`}
               >
                 {tab.label}
-                <span className={`hidden text-xs tabular-nums sm:inline ${selected ? "text-primary/70" : "text-muted/70"}`}>{tab.count}</span>
-                {selected && <span aria-hidden className="absolute inset-x-0 -bottom-px h-[3px] rounded-t-full bg-gradient-to-r from-primary to-sky" />}
+                <span className={`section-tab-count hidden text-xs tabular-nums sm:inline ${selected ? "text-primary/70" : "text-muted/70"}`}>{tab.count}</span>
+                {selected && <span aria-hidden className="section-tab-line absolute inset-x-0 -bottom-px h-[3px] rounded-t-full bg-gradient-to-r from-primary to-sky" />}
               </button>
             );
           })}
