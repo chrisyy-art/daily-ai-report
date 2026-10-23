@@ -148,6 +148,7 @@ bash deploy/install.sh
 | 修改后台密码 | `nano .env`，改 `ADMIN_PASSWORD` 那一行，`Ctrl+O` 回车保存、`Ctrl+X` 退出，再执行 `pm2 restart daily-ai` |
 | 查看运行状态 | `pm2 status` |
 | 查看错误日志 | `pm2 logs daily-ai` |
+| 网站打不开时一键诊断 | `bash deploy/doctor.sh`（逐项检查程序、Nginx、域名解析、HTTPS 证书，并给出处理建议） |
 | 手动备份数据库 | `bash deploy/backup.sh` |
 
 如果是用上传 zip 的方式部署的，更新时需要重新上传解压一次代码，再执行 `bash deploy/update.sh`。
