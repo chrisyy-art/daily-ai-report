@@ -8,7 +8,7 @@ type Props = {
   title: string;
   date: string;
   content: string;
-  /** 板块 Tab 吸顶时距离可视区顶部的距离（前台要让出顶栏高度） */
+  /** 板块 Tab 吸顶时距离可视区顶部的距离；前台不传，按主题自动计算 */
   stickyTop?: number;
 };
 
@@ -19,7 +19,7 @@ type Props = {
  * 没有 "use client"：前台在服务端渲染好所有内容，浏览器端只负责切换 Tab；
  * 后台编辑器（客户端组件）引用时则在浏览器里实时渲染，两边展示完全一致。
  */
-export default function ReportBody({ title, date, content, stickyTop = 56 }: Props) {
+export default function ReportBody({ title, date, content, stickyTop }: Props) {
   const { intro: lead, sections } = parseReport(content);
   const buckets = assignToTabs(sections, SECTION_TABS);
   const total = buckets.reduce((n, b) => n + b.length, 0);

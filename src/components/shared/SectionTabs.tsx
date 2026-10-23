@@ -7,14 +7,15 @@ type Tab = { label: string; count: number };
 type Props = {
   tabs: Tab[];
   panels: React.ReactNode[];
-  /** 吸顶时距离可视区顶部的像素 */
-  stickyTop: number;
+  /** 吸顶时距离可视区顶部的像素；不传则用前台的 --sticky-top（随主题、屏幕宽度变化） */
+  stickyTop?: number;
 };
 
 /** 板块 Tab（放在新闻卡片顶部，下划线样式，滚动时吸顶）：只负责切换显示，各板块内容由调用方渲染好传入 */
 export default function SectionTabs({ tabs, panels, stickyTop }: Props) {
   const [active, setActive] = useState(0);
   const anchorRef = useRef<HTMLDivElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
   // 编辑时板块数量可能变少，避免越界
   const current = Math.min(active, tabs.length - 1);
 
@@ -22,15 +23,20 @@ export default function SectionTabs({ tabs, panels, stickyTop }: Props) {
     setActive(index);
     // Tab 已经吸顶（说明往下读过了）时，切换后回到板块开头
     const anchor = anchorRef.current;
-    if (anchor && anchor.getBoundingClientRect().top < stickyTop) {
-      window.scrollTo({ top: window.scrollY + anchor.getBoundingClientRect().top - stickyTop });
+    const offset = barRef.current ? parseFloat(getComputedStyle(barRef.current).top) || 0 : 0;
+    if (anchor && anchor.getBoundingClientRect().top < offset) {
+      window.scrollTo({ top: window.scrollY + anchor.getBoundingClientRect().top - offset });
     }
   }
 
   return (
     <>
       <div ref={anchorRef} />
-      <div className="section-tabs-bar sticky z-30 rounded-t-[20px] bg-surface px-5 md:rounded-t-3xl md:px-8" style={{ top: stickyTop }}>
+      <div
+        ref={barRef}
+        className="section-tabs-bar sticky z-30 rounded-t-[20px] bg-surface px-5 md:rounded-t-3xl md:px-8"
+        style={{ top: stickyTop ?? "var(--sticky-top, 56px)" }}
+      >
         {/* 手机上 5 个 Tab 放不下时可左右滑动，右侧渐隐提示还有内容 */}
         <span aria-hidden className="pointer-events-none absolute inset-y-0 right-5 z-10 w-10 bg-gradient-to-l from-surface sm:hidden" />
         <div

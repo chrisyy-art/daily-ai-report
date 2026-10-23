@@ -244,3 +244,48 @@
   background: rgb(var(--surface) / 0.96);
   backdrop-filter: blur(14px);
 }
+
+/* ===== 前台通用：吸顶位置（让出顶栏高度）===== */
+.reader {
+  --sticky-top: 56px;
+}
+
+/* ===== 前台 P 风格（参考 P-Max，默认）===== */
+.reader[data-theme="p"] {
+  --bg: 247 247 248;        /* #F7F7F8 中性浅灰底 */
+  --surface: 255 255 255;
+  --ink: 17 17 17;          /* #111111 标题近黑 */
+  --fg: 55 65 81;           /* #374151 正文 */
+  --muted: 107 114 128;     /* #6B7280 次要文字 */
+  --line: 233 234 238;      /* #E9EAEE 细边框 */
+  --soft: 243 244 246;
+  --primary: 22 93 255;     /* #165DFF 主色蓝 */
+  --sky: 64 150 255;        /* #4096FF 浅一档的蓝，用于渐变 */
+  --sky-soft: 236 243 255;
+  --link: 22 93 255;
+  background: rgb(var(--bg));
+}
+
+/* 横幅：只在 P 风格显示。浅蓝渐变底 + 方格线（间距与 BannerGrid 的 BANNER_CELL 一致） */
+.reader-banner {
+  display: none;
+}
+.reader[data-theme="p"] .reader-banner {
+  display: block;
+  background-color: rgb(250 252 255);
+  background-image:
+    linear-gradient(rgb(var(--primary) / 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--primary) / 0.06) 1px, transparent 1px),
+    linear-gradient(180deg, rgb(240 245 255), rgb(250 252 255));
+  background-size: 44px 44px, 44px 44px, 100% 100%;
+}
+
+/* 电脑上 P 风格不显示自己的顶栏（嵌入 P-Max 时由对方的导航代替），吸顶贴到最上方 */
+@media (min-width: 1024px) {
+  .reader[data-theme="p"] {
+    --sticky-top: 0px;
+  }
+  .reader[data-theme="p"] .reader-topbar {
+    display: none;
+  }
+}

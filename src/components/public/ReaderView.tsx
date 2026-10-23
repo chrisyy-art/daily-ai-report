@@ -7,10 +7,11 @@ import { SITE_NAME } from "@/lib/site";
 import { parseTheme, THEME_COOKIE, type ReaderTheme } from "@/lib/theme";
 import MobileReportPicker from "./MobileReportPicker";
 import Sidebar from "./Sidebar";
-import ThemeToggle from "./ThemeToggle";
+import BannerGrid from "./BannerGrid";
+import ThemeSwitch from "./ThemeSwitch";
 import ViewTracker from "./ViewTracker";
 
-/** 顶栏：Logo + 站点名；移动端右侧是「往期」目录 */
+/** 顶栏：Logo + 站点名，右侧风格切换；移动端右侧还有「往期」目录。P 风格在电脑上隐藏（由横幅代替） */
 function TopBar({ reports, activeId, theme }: { reports: ReportListEntry[]; activeId?: number; theme: ReaderTheme }) {
   return (
     <header className="reader-topbar sticky top-0 z-40 border-b border-line bg-surface">
@@ -19,11 +20,34 @@ function TopBar({ reports, activeId, theme }: { reports: ReportListEntry[]; acti
           <Logo />
         </Link>
         <div className="flex items-center gap-1">
-          <ThemeToggle initial={theme} />
+          <ThemeSwitch initial={theme} />
           <MobileReportPicker reports={reports} activeId={activeId} />
         </div>
       </div>
     </header>
+  );
+}
+
+/** P 风格的顶部横幅：动态方格背景 + 栏目标题（其他风格隐藏） */
+function Banner({ theme }: { theme: ReaderTheme }) {
+  return (
+    <section className="reader-banner relative overflow-hidden border-b border-line">
+      <BannerGrid />
+      <div className="relative mx-auto max-w-[1200px] px-4 lg:px-8">
+        <div className="absolute right-4 top-4 hidden lg:right-8 lg:block">
+          <ThemeSwitch initial={theme} />
+        </div>
+        <div className="flex flex-col items-center py-12 text-center md:py-16">
+          <p className="rounded-full border border-line bg-surface/70 px-3.5 py-1 font-mono text-[11px] tracking-[0.3em] text-muted">
+            DAILY AI BRIEFING
+          </p>
+          <p className="mt-4 text-[30px] font-bold leading-tight tracking-tight text-ink md:text-[40px]">
+            数科每日<span className="text-primary">AI</span>
+          </p>
+          <p className="mt-3 text-sm text-muted md:text-[15px]">追踪全球 AI 前沿动态，洞察产业趋势与商业机会</p>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -46,7 +70,7 @@ function SiteFooter() {
   );
 }
 
-/** 对客阅读端整体布局：顶栏 + 左侧往期目录 + 右侧正文 */
+/** 对客阅读端整体布局：顶栏（P 风格为横幅）+ 左侧往期目录 + 右侧正文 */
 export default function ReaderView({ reports, report }: { reports: ReportListEntry[]; report: Report | null }) {
   const theme = parseTheme(cookies().get(THEME_COOKIE)?.value);
 
@@ -55,6 +79,7 @@ export default function ReaderView({ reports, report }: { reports: ReportListEnt
       {/* 深色主题下的背景光效（浅色主题隐藏） */}
       <div aria-hidden className="reader-glow pointer-events-none absolute inset-x-0 top-0 h-[640px] overflow-hidden" />
       <TopBar reports={reports} activeId={report?.id} theme={theme} />
+      <Banner theme={theme} />
 
       <div className="relative mx-auto flex w-full max-w-[1200px] flex-1 gap-6 px-3 pt-4 md:px-4 md:pt-6 lg:gap-6 lg:px-8">
         <Sidebar reports={reports} activeId={report?.id} />

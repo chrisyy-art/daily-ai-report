@@ -103,10 +103,16 @@ npm run dev        # http://localhost:3000
 
 ## 前台主题
 
-前台有「深色」（参考钉钉开发者平台）和「浅色」（白底卡片）两套主题，读者可点顶栏右侧的 ☀ / ☾ 按钮切换，选择会记在浏览器里。
+前台有三套风格，读者可点右上角的「P / ☀ / ☾」切换，选择会记在浏览器里：
 
-- 默认主题在 `src/lib/theme.ts` 的 `DEFAULT_THEME` 中修改。
-- 两套主题共用同一套页面结构，颜色变量分别定义在 `src/app/globals.css` 的 `:root`（浅色）与 `.reader[data-theme="dark"]`（深色）中。
+| 风格 | 说明 |
+|---|---|
+| **P（默认）** | 参考 P-Max：顶部蓝色方格横幅「数科每日AI」，鼠标移到哪里方格亮到哪里；电脑上不显示自己的顶栏，便于嵌入 P-Max 作为一个栏目 |
+| 浅色 | 浅灰蓝底 + 白色卡片 + 顶栏 |
+| 深色 | 参考钉钉开发者平台：近黑底、卡片蓝色光晕 |
+
+- 默认风格在 `src/lib/theme.ts` 的 `DEFAULT_THEME` 中修改；横幅文字在 `src/components/public/ReaderView.tsx` 的 `Banner` 中修改。
+- 三套风格共用同一套页面结构，颜色变量分别定义在 `src/app/globals.css` 的 `:root`（浅色）、`.reader[data-theme="dark"]`、`.reader[data-theme="p"]` 中。
 - 后台始终为浅色。
 
 ## 阅读统计
