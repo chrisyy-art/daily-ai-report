@@ -31,25 +31,21 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: SITE_NAME,
   description: SITE_DESCRIPTION,
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    url: "/",
+    locale: "zh_CN",
+    images: [SHARE_IMAGE],
+  },
   twitter: { card: "summary_large_image", title: SITE_NAME, description: SITE_DESCRIPTION, images: [SHARE_IMAGE.url] },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN" className={`${sans.variable} ${mono.variable}`}>
-      {/*
-        分享卡片只输出 og:image 等，不输出 og:title / og:description（钉钉据此按 16:9 大图版式渲染）。
-        不走 metadata.openGraph：Next 会自动把页面 title / description 补成 og:title / og:description。
-      */}
-      <head>
-        <meta property="og:type" content="website" />
-        <meta property="og:site_name" content={SITE_NAME} />
-        <meta property="og:locale" content="zh_CN" />
-        <meta property="og:image" content={new URL(SHARE_IMAGE.url, SITE_URL).toString()} />
-        <meta property="og:image:width" content={String(SHARE_IMAGE.width)} />
-        <meta property="og:image:height" content={String(SHARE_IMAGE.height)} />
-        <meta property="og:image:alt" content={SHARE_IMAGE.alt} />
-      </head>
       <body>{children}</body>
     </html>
   );
