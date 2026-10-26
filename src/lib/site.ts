@@ -7,8 +7,11 @@ export const SITE_DESCRIPTION = "追踪全球 AI 前沿动态，洞察产业趋�
 /** 站点对外地址：分享卡片里的图片、链接需要完整网址。换域名时在 .env 设置 SITE_URL */
 export const SITE_URL = process.env.SITE_URL || "https://dtresearchhub.cn";
 
-/** 分享卡片封面（1200×630 JPEG） */
+/** 分享卡片封面（1200×630 JPEG）：支持大图卡片的应用使用 */
 export const SHARE_IMAGE = { url: "/og-cover.jpg", width: 1200, height: 630, alt: SITE_NAME };
+
+/** 分享缩略图（300×300 方形 JPEG）：钉钉等「右侧小方图」样式的卡片使用 */
+export const SHARE_THUMB = "/share-thumb.jpg";
 
 /**
  * 前台固定显示的新闻板块 Tab（顺序即显示顺序）。
