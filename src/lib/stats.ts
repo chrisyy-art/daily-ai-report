@@ -1,62 +1,62 @@
 import { prisma } from "./prisma";
 import { todayString } from "./date";
 
-/** 同一访客在这段时间内重复打开同一篇，只算一次阅读 */
-const DEDUPE_MS = 30 * 60 * 1000;
-
-/** 记录一次阅读。返回是否计入（30 分钟内重复打开不计入） */
+/**
+ * 记录一次阅读。同一访客对同一篇日报只记录一次，之后再打开、刷新都不再计入。
+ * 返回是否计入。
+ */
 export async function recordView(reportId: number, visitorId: string): Promise<boolean> {
-  const day = todayString();
-  const key = { reportId_visitorId_day: { reportId, visitorId, day } };
-  const existing = await prisma.reportView.findUnique({ where: key, select: { updatedAt: true } });
-
-  if (!existing) {
-    try {
-      await prisma.reportView.create({ data: { reportId, visitorId, day } });
-      return true;
-    } catch {
-      // 并发时另一个请求刚刚创建了这一行，按重复打开处理
-      return false;
-    }
+  const existing = await prisma.reportView.findFirst({ where: { reportId, visitorId }, select: { id: true } });
+  if (existing) return false;
+  try {
+    await prisma.reportView.create({ data: { reportId, visitorId, day: todayString() } });
+    return true;
+  } catch {
+    // 并发时另一个请求刚刚创建了这一行，按重复打开处理
+    return false;
   }
-  if (Date.now() - existing.updatedAt.getTime() < DEDUPE_MS) return false;
-  await prisma.reportView.update({ where: key, data: { count: { increment: 1 } } });
-  return true;
 }
 
-export type ReportStats = { views: number; visitors: number };
+/**
+ * 每个「访客 × 日报」首次阅读的日期。
+ * 旧规则下同一访客可能留有多天的记录，这里统一只取最早一天，历史数据也按新规则去重。
+ */
+async function firstReads() {
+  const rows = await prisma.reportView.groupBy({ by: ["reportId", "visitorId"], _min: { day: true } });
+  return rows.map((r) => ({ reportId: r.reportId, visitorId: r.visitorId, day: r._min.day ?? "" }));
+}
 
-/** 每篇日报的累计阅读量与访客数 */
+export type ReportStats = { readers: number };
+
+/** 每篇日报的累计阅读人数（每位访客只计一次） */
 export async function statsByReport(): Promise<Map<number, ReportStats>> {
-  const rows = await prisma.reportView.groupBy({
-    by: ["reportId"],
-    _sum: { count: true },
-    _count: { _all: true },
-  });
-  return new Map(rows.map((r) => [r.reportId, { views: r._sum.count ?? 0, visitors: r._count._all }]));
+  const counts = new Map<number, ReportStats>();
+  for (const r of await firstReads()) {
+    const s = counts.get(r.reportId) ?? { readers: 0 };
+    s.readers += 1;
+    counts.set(r.reportId, s);
+  }
+  return counts;
 }
 
-/** 将日期字符串前推 n 天 */
-function daysAgo(n: number): string {
-  const [y, m, d] = todayString().split("-").map(Number);
-  const date = new Date(Date.UTC(y, m - 1, d - n));
-  return date.toISOString().slice(0, 10);
-}
-
-/** 全站概览：今天、近 7 天的阅读量与访客数（访客跨文章去重） */
+/**
+ * 全站概览（均已去重）：
+ * - 阅读：同一访客读同一篇只算 1 次，按首次阅读的日期归属
+ * - 访客：同一访客只算 1 次，按首次来访的日期归属（「今日访客」即今天新来的访客）
+ */
 export async function siteOverview() {
   const today = todayString();
-  const weekStart = daysAgo(6);
+  const reads = await firstReads();
 
-  const [todaySum, weekSum, todayVisitors, weekVisitors] = await Promise.all([
-    prisma.reportView.aggregate({ where: { day: today }, _sum: { count: true } }),
-    prisma.reportView.aggregate({ where: { day: { gte: weekStart } }, _sum: { count: true } }),
-    prisma.reportView.findMany({ where: { day: today }, distinct: ["visitorId"], select: { visitorId: true } }),
-    prisma.reportView.findMany({ where: { day: { gte: weekStart } }, distinct: ["visitorId"], select: { visitorId: true } }),
-  ]);
+  const firstVisit = new Map<string, string>();
+  for (const r of reads) {
+    const prev = firstVisit.get(r.visitorId);
+    if (!prev || r.day < prev) firstVisit.set(r.visitorId, r.day);
+  }
+  const visitDays = [...firstVisit.values()];
 
   return {
-    today: { views: todaySum._sum.count ?? 0, visitors: todayVisitors.length },
-    week: { views: weekSum._sum.count ?? 0, visitors: weekVisitors.length },
+    today: { views: reads.filter((r) => r.day === today).length, visitors: visitDays.filter((d) => d === today).length },
+    total: { views: reads.length, visitors: visitDays.length },
   };
 }

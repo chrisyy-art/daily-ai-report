@@ -23,7 +23,7 @@ model Report {
   @@index([published, date])
 }
 
-/// 阅读统计：每位访客每天每篇一行。阅读量 = count 之和，访客数 = 行数
+/// 阅读统计：每位访客每篇只记一行（首次阅读）。旧数据可能有多天的行，统计时按「访客 × 日报」去重
 model ReportView {
   id        Int      @id @default(autoincrement())
   reportId  Int
@@ -32,7 +32,7 @@ model ReportView {
   visitorId String
   /// 阅读日期，YYYY-MM-DD（按 REPORT_TIMEZONE）
   day       String
-  /// 当天打开次数（30 分钟内重复打开只算一次）
+  /// 旧规则遗留字段，已不参与统计
   count     Int      @default(1)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

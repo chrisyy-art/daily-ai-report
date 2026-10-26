@@ -6,8 +6,8 @@ import { recordView } from "@/lib/stats";
 const VISITOR_COOKIE = "daily_ai_vid";
 const ONE_YEAR = 60 * 60 * 24 * 365;
 
-// 搜索引擎、链接预览、监控等自动访问不计入
-const BOT_UA = /bot|crawl|spider|slurp|preview|monitor|curl|wget|python|headless|lighthouse|facebookexternalhit/i;
+// 搜索引擎、链接预览（含钉钉卡片抓取 DingTalk-LinkService）、监控等自动访问不计入
+const BOT_UA = /bot|crawl|spider|slurp|preview|monitor|curl|wget|python|headless|lighthouse|facebookexternalhit|linkservice/i;
 
 /** 读者打开日报时由页面调用（公开接口，无需登录） */
 export async function POST(req: Request) {

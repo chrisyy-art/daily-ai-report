@@ -43,9 +43,9 @@ export default async function AdminHomePage({ searchParams }: { searchParams: { 
 
       <section className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4" aria-label="阅读数据概览">
         <StatCard label="今日阅读" value={overview.today.views} />
-        <StatCard label="今日访客" value={overview.today.visitors} />
-        <StatCard label="近 7 天阅读" value={overview.week.views} />
-        <StatCard label="近 7 天访客" value={overview.week.visitors} />
+        <StatCard label="今日新访客" value={overview.today.visitors} />
+        <StatCard label="累计阅读" value={overview.total.views} />
+        <StatCard label="累计访客" value={overview.total.visitors} />
       </section>
 
       <nav className="mb-4 flex gap-2" aria-label="按状态筛选">
@@ -75,11 +75,11 @@ export default async function AdminHomePage({ searchParams }: { searchParams: { 
           emptyText={EMPTY_TEXT[status]}
           renderMeta={(r) => {
             if (!r.published) return null;
-            const s = stats.get(r.id) ?? { views: 0, visitors: 0 };
+            const s = stats.get(r.id) ?? { readers: 0 };
             return (
-              <span className="flex items-center gap-1" title="累计阅读量 / 访客数（同一访客 30 分钟内重复打开只计一次，管理员浏览不计入）">
+              <span className="flex items-center gap-1" title="累计阅读人数（同一访客重复打开只计一次，管理员浏览不计入）">
                 <EyeIcon />
-                <span className="font-semibold text-ink/80">{s.views}</span> 阅读 · {s.visitors} 人
+                <span className="font-semibold text-ink/80">{s.readers}</span> 人阅读
               </span>
             );
           }}
