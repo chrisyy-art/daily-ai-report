@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { SHARE_IMAGE, SHARE_THUMB, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
+import { SHARE_IMAGE, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 
 // 西文与数字用 Inter，中文回落到 PingFang SC / 微软雅黑。
 // 字体文件随项目提供（可变字重），构建时无需访问 Google Fonts，国内服务器也能正常构建。
@@ -24,7 +24,7 @@ const mono = localFont({
 });
 
 /**
- * 默认的分享信息（Open Graph）：在钉钉、微信等处发送网址时，显示为「标题 + 描述 + 封面图」卡片。
+ * 默认的分享信息（Open Graph）：在钉钉等处发送网址时，显示为「16:9 大图 + 标题 + 描述」卡片。
  * 日报页面会用自己的标题和摘要覆盖。
  */
 export const metadata: Metadata = {
@@ -46,13 +46,6 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN" className={`${sans.variable} ${mono.variable}`}>
-      <head>
-        {/* 部分国内应用（如钉钉的小方图卡片）读取 itemprop / image_src 作为缩略图，而不是 og:image 大图 */}
-        <meta itemProp="name" content={SITE_NAME} />
-        <meta itemProp="description" content={SITE_DESCRIPTION} />
-        <meta itemProp="image" content={new URL(SHARE_THUMB, SITE_URL).toString()} />
-        <link rel="image_src" href={new URL(SHARE_THUMB, SITE_URL).toString()} />
-      </head>
       <body>{children}</body>
     </html>
   );
