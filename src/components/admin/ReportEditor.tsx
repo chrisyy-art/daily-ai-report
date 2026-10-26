@@ -161,10 +161,13 @@ export default function ReportEditor({ id, initial, initialPublished = false, in
     flash("已保留格式粘贴（自动转换为 Markdown）");
   }
 
-  async function readImportFile(file: File): Promise<{ markdown: string; images?: number }> {
+  async function readImportFile(file: File): Promise<{ markdown: string; images?: number; title?: string }> {
     const name = file.name.toLowerCase();
     if (/\.(md|markdown|txt)$/.test(name)) return { markdown: (await file.text()).trim() };
-    if (/\.html?$/.test(name)) return { markdown: await htmlFileToMarkdown(file) };
+    if (/\.html?$/.test(name)) {
+      const { markdown, title, failedImages } = await htmlFileToMarkdown(file);
+      return { markdown, title, images: failedImages };
+    }
     if (name.endsWith(".docx")) {
       const body = new FormData();
       body.append("file", file);
@@ -182,14 +185,16 @@ export default function ReportEditor({ id, initial, initialPublished = false, in
     setImporting(true);
     setFormError("");
     try {
-      let { markdown, images = 0 } = await readImportFile(file);
+      let { markdown, images = 0, title } = await readImportFile(file);
       if (!markdown) throw new Error("文档里没有可导入的内容");
 
-      // 标题为空时，用文档首行标题填充
+      // 标题为空时，用文档首行标题填充，没有则用网页标题
       const lead = !values.title.trim() ? splitLeadingTitle(markdown) : null;
       if (lead) {
         set("title", lead.title);
         markdown = lead.body;
+      } else if (!values.title.trim() && title) {
+        set("title", title);
       }
 
       if (!values.content.trim()) {
@@ -199,7 +204,7 @@ export default function ReportEditor({ id, initial, initialPublished = false, in
       } else {
         insertAtCursor(markdown);
       }
-      flash(`已导入「${file.name}」${images ? `（${images} 张图片暂不支持导入，已跳过）` : ""}`);
+      flash(`已导入「${file.name}」${images ? `（${images} 张图片没能导入，已跳过）` : ""}`);
     } catch (err) {
       setFormError(err instanceof Error ? err.message : "导入失败");
     } finally {

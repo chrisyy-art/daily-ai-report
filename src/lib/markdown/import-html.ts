@@ -123,14 +123,56 @@ function pickContent(doc: Document): HTMLElement {
   return doc.body;
 }
 
-export async function htmlFileToMarkdown(file: File): Promise<string> {
+/** 上传一张内嵌（base64）图片，返回服务器上的地址；失败返回 null */
+async function uploadDataImage(dataUrl: string): Promise<string | null> {
+  try {
+    const blob = await (await fetch(dataUrl)).blob();
+    const body = new FormData();
+    body.append("file", blob, "image");
+    const res = await fetch("/api/admin/upload", { method: "POST", body });
+    if (!res.ok) return null;
+    return ((await res.json()) as { url?: string }).url ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** 把正文里的内嵌图片上传到服务器并换成图片地址（相同图片只传一次），返回上传失败的数量 */
+async function uploadInlineImages(root: HTMLElement): Promise<number> {
+  const images = Array.from(root.querySelectorAll("img")).filter((img) => img.getAttribute("src")?.startsWith("data:image/"));
+  const urls = new Map<string, Promise<string | null>>();
+  for (const img of images) {
+    const src = img.getAttribute("src")!;
+    if (!urls.has(src)) urls.set(src, uploadDataImage(src));
+  }
+  let failed = 0;
+  await Promise.all(
+    images.map(async (img) => {
+      const url = await urls.get(img.getAttribute("src")!)!;
+      if (url) img.setAttribute("src", url);
+      else failed += 1;
+    }),
+  );
+  return failed;
+}
+
+export type HtmlImport = {
+  markdown: string;
+  /** 网页标题（<title>），正文里没有标题时用来填充 */
+  title: string;
+  /** 上传失败、没能导入的图片数 */
+  failedImages: number;
+};
+
+export async function htmlFileToMarkdown(file: File): Promise<HtmlImport> {
   const html = decode(await file.arrayBuffer());
   const { doc, dispose } = await renderInSandbox(html);
   try {
     inlineComputedStyles(doc);
     const root = pickContent(doc);
     root.querySelectorAll(CHROME_SELECTORS).forEach((el) => el.remove());
-    return htmlToMarkdown(root.innerHTML);
+    const failedImages = await uploadInlineImages(root);
+    return { markdown: htmlToMarkdown(root.innerHTML), title: doc.title.trim(), failedImages };
   } finally {
     dispose();
   }

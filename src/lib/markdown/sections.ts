@@ -152,3 +152,30 @@ export function splitHeadline(item: string): Headline | null {
   if (!m) return null;
   return { title: m[1].trim(), meta: m[2] ? normalizeMeta(m[2]) : "", body: rest.join("\n\n").trim() };
 }
+
+export type NewsImage = {
+  src: string;
+  alt: string;
+  /** 点击图片打开的地址（原图） */
+  href?: string;
+  /** 完整显示、不裁切（适合 Logo、带文字的图） */
+  contain: boolean;
+};
+
+// 单独成段的图片：![说明](地址 "contain") 或外面再包一层链接 [![说明](地址)](原图地址)
+const IMAGE_BLOCK = /^\s*(\[)?!\[([^\]]*)\]\(\s*(\S+?)(?:\s+"([^"]*)")?\s*\)(?:\]\(\s*(\S+?)\s*\))?\s*$/;
+
+/**
+ * 取出一条新闻里单独成段的配图（第一张），配图在卡片右侧显示，其余内容照常渲染。
+ * 没有配图时 image 为 null。
+ */
+export function splitImage(item: string): { image: NewsImage | null; text: string } {
+  const blocks = item.split(/\n\s*\n/);
+  for (let i = 0; i < blocks.length; i++) {
+    const m = blocks[i].match(IMAGE_BLOCK);
+    if (!m || (m[1] && !m[5])) continue;
+    const image = { src: m[3], alt: m[2].trim(), href: m[5], contain: m[4] === "contain" };
+    return { image, text: blocks.filter((_, j) => j !== i).join("\n\n").trim() };
+  }
+  return { image: null, text: item };
+}

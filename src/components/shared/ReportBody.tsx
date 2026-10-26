@@ -1,7 +1,7 @@
 import Markdown from "./Markdown";
 import ReportHeader from "./ReportHeader";
 import SectionTabs from "./SectionTabs";
-import { assignToTabs, parseReport, splitHeadline } from "@/lib/markdown/sections";
+import { assignToTabs, parseReport, splitHeadline, splitImage, type NewsImage } from "@/lib/markdown/sections";
 import { SECTION_TABS } from "@/lib/site";
 
 type Props = {
@@ -12,8 +12,8 @@ type Props = {
   stickyTop?: number;
 };
 
-/** 一条新闻：能识别「【标题】（来源…）」时拆成标题行 + 来源行 + 要点，否则按原样渲染 */
-function NewsItem({ item }: { item: string }) {
+/** 一条新闻的文字：能识别「【标题】（来源…）」时拆成标题行 + 来源行 + 要点，否则按原样渲染 */
+function NewsText({ item }: { item: string }) {
   const h = splitHeadline(item);
   if (!h) return <Markdown content={item} />;
   return (
@@ -30,6 +30,46 @@ function NewsItem({ item }: { item: string }) {
         </div>
       )}
     </>
+  );
+}
+
+/** 新闻配图：16:9，点击打开原图 */
+function NewsVisual({ image }: { image: NewsImage }) {
+  const img = (
+    // 图片来自站内上传或原文地址，尺寸不固定，不走 next/image
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={image.src}
+      alt={image.alt}
+      loading="lazy"
+      decoding="async"
+      className={`news-visual-img aspect-video w-full rounded-xl border border-line ${image.contain ? "object-contain bg-white p-2" : "object-cover bg-line/40"}`}
+    />
+  );
+  return (
+    <figure className="news-visual m-0">
+      {image.href ? (
+        <a href={image.href} target="_blank" rel="noopener noreferrer" title="查看原图" className="block rounded-xl">
+          {img}
+        </a>
+      ) : (
+        img
+      )}
+    </figure>
+  );
+}
+
+/** 一条新闻：有配图时文字在左、图在右（手机上图在文字下方） */
+function NewsItem({ item }: { item: string }) {
+  const { image, text } = splitImage(item);
+  if (!image) return <NewsText item={text} />;
+  return (
+    <div className="news-with-image grid gap-3 sm:grid-cols-[minmax(0,1fr)_200px] sm:items-center sm:gap-6 md:grid-cols-[minmax(0,1fr)_224px]">
+      <div className="min-w-0">
+        <NewsText item={text} />
+      </div>
+      <NewsVisual image={image} />
+    </div>
   );
 }
 

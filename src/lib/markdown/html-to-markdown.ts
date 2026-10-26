@@ -64,14 +64,17 @@ function createService() {
     },
   });
 
-  // 图片：只保留网络图片，内嵌的 base64 图片丢弃
+  // 图片：保留网络图片和站内图片（导入 HTML 时内嵌图片已上传到 /uploads/），其余 base64 图片丢弃。
+  // 原文图片设置了「完整显示、不裁切」（class="is-contain"）时，用 title "contain" 记下来
   service.addRule("image", {
     filter: "img",
     replacement: (_content, node) => {
-      const src = ((node as HTMLElement).getAttribute("src") ?? "").trim();
-      if (!/^https?:\/\//i.test(src)) return "";
-      const alt = ((node as HTMLElement).getAttribute("alt") ?? "").replace(/[[\]]/g, "");
-      return `![${alt}](${src})`;
+      const el = node as HTMLElement;
+      const src = (el.getAttribute("src") ?? "").trim();
+      if (!/^(https?:\/\/|\/uploads\/)/i.test(src)) return "";
+      const alt = (el.getAttribute("alt") ?? "").replace(/[[\]【】]/g, "").replace(/[，,]\s*图片取自.*$/, "").trim();
+      const title = /\bis-contain\b/.test(el.getAttribute("class") ?? "") ? ' "contain"' : "";
+      return `![${alt}](${src.replace(/ /g, "%20")}${title})`;
     },
   });
 

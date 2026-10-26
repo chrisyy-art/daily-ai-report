@@ -162,14 +162,21 @@
 }
 
 /* 新闻条目（未能拆分标题行时）：第一段是标题行，字号更大、颜色更深 */
-.news-item > div > .md-body > p:first-child {
+.news-item > div > .md-body > p:first-child,
+.news-with-image > div > .md-body > p:first-child {
   @apply text-[15px] leading-[1.6] text-ink;
 }
-.news-item > div > .md-body > p:first-child strong {
+.news-item > div > .md-body > p:first-child strong,
+.news-with-image > div > .md-body > p:first-child strong {
   @apply font-semibold;
 }
 .news-item .md-body > * + * {
   @apply mt-2.5;
+}
+/* 新闻配图：悬停时轻微提示可点开原图 */
+.news-visual a:hover .news-visual-img,
+.news-visual a:focus-visible .news-visual-img {
+  @apply border-primary/40;
 }
 
 /* ===== 前台深色主题（参考钉钉开发者平台）=====
