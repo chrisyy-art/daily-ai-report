@@ -33,7 +33,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${title} · ${SITE_NAME}`,
     description,
-    openGraph: { type: "article", siteName: SITE_NAME, title, description, url: `/report/${report.date}`, images: [SHARE_IMAGE] },
     twitter: { card: "summary_large_image", title, description, images: [SHARE_IMAGE.url] },
   };
 }
