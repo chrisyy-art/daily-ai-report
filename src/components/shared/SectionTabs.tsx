@@ -37,7 +37,7 @@ export default function SectionTabs({ tabs, panels, stickyTop }: Props) {
         className="section-tabs-bar sticky z-30 rounded-t-[20px] bg-surface px-5 md:rounded-t-3xl md:px-8"
         style={{ top: stickyTop ?? "var(--sticky-top, 56px)" }}
       >
-        {/* 手机上 5 个 Tab 放不下时可左右滑动，右侧渐隐提示还有内容 */}
+        {/* 手机上 Tab 放不下时可左右滑动，右侧渐隐提示还有内容 */}
         <span aria-hidden className="section-tabs-fade pointer-events-none absolute inset-y-0 right-5 z-10 w-10 bg-gradient-to-l from-surface sm:hidden" />
         <div
           role="tablist"
@@ -68,7 +68,16 @@ export default function SectionTabs({ tabs, panels, stickyTop }: Props) {
         </div>
       </div>
 
-      <div role="tabpanel" id="section-panel" aria-labelledby={`section-tab-${current}`}>
+      {/* 面板内带 data-goto-tab 的按钮（如「汇总」里的「只看本板块」）可切换到对应 Tab */}
+      <div
+        role="tabpanel"
+        id="section-panel"
+        aria-labelledby={`section-tab-${current}`}
+        onClick={(e) => {
+          const target = (e.target as HTMLElement).closest<HTMLElement>("[data-goto-tab]");
+          if (target) select(Number(target.dataset.gotoTab));
+        }}
+      >
         {panels[current]}
       </div>
     </>

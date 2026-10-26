@@ -261,6 +261,11 @@
   @apply mt-2;
 }
 
+/* ===== 「汇总」：各板块分组，组与组之间用细线隔开 ===== */
+.news-group + .news-group {
+  @apply border-t border-line;
+}
+
 /* ===== 前台 P 风格（按「每日AI · P-Max」设计稿，默认）=====
    暖白底、橙红强调色、IBM Plex Mono 等宽字；P-Max 的导航由宿主页面提供，这里不显示自己的顶栏 */
 .reader[data-theme="p"] {
@@ -561,6 +566,27 @@
   font-weight: 600;
 }
 .reader[data-theme="p"] .section-tab[aria-selected="true"] .section-tab-count {
+  color: rgb(var(--accent-ink));
+}
+
+/* 汇总：每个板块一个小标题 + 一张白卡 */
+.reader[data-theme="p"] .news-group + .news-group {
+  margin-top: 22px;
+  border-top: 0;
+}
+.reader[data-theme="p"] .news-group-head {
+  padding: 0 4px 8px;
+}
+.reader[data-theme="p"] .news-group-title {
+  font-size: 14px;
+  font-weight: 700;
+}
+.reader[data-theme="p"] .news-group-count {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  color: rgb(var(--muted));
+}
+.reader[data-theme="p"] .news-group-more {
   color: rgb(var(--accent-ink));
 }
 
