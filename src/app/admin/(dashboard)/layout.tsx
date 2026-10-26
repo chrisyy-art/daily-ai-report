@@ -6,7 +6,7 @@ import Logo from "@/components/ui/Logo";
 import { isAuthenticated } from "@/lib/session";
 import { SITE_NAME } from "@/lib/site";
 
-export const metadata: Metadata = { title: `${SITE_NAME} 后台` };
+export const metadata: Metadata = { title: `${SITE_NAME} 后台`, robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { SITE_NAME } from "@/lib/site";
+import { SHARE_IMAGE, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 
 // 西文与数字用 Inter，中文回落到 PingFang SC / 微软雅黑。
 // 字体文件随项目提供（可变字重），构建时无需访问 Google Fonts，国内服务器也能正常构建。
@@ -23,14 +23,35 @@ const mono = localFont({
   display: "swap",
 });
 
+/**
+ * 默认的分享信息（Open Graph）：在钉钉、微信等处发送网址时，显示为「标题 + 描述 + 封面图」卡片。
+ * 日报页面会用自己的标题和摘要覆盖。
+ */
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: SITE_NAME,
-  description: "每天几分钟，跟上 AI 行业的重要动态。",
+  description: SITE_DESCRIPTION,
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    url: "/",
+    locale: "zh_CN",
+    images: [SHARE_IMAGE],
+  },
+  twitter: { card: "summary_large_image", title: SITE_NAME, description: SITE_DESCRIPTION, images: [SHARE_IMAGE.url] },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN" className={`${sans.variable} ${mono.variable}`}>
+      <head>
+        {/* 部分国内应用读取 schema.org 的 itemprop 而不是 og: 标签 */}
+        <meta itemProp="name" content={SITE_NAME} />
+        <meta itemProp="description" content={SITE_DESCRIPTION} />
+        <meta itemProp="image" content={new URL(SHARE_IMAGE.url, SITE_URL).toString()} />
+      </head>
       <body>{children}</body>
     </html>
   );
