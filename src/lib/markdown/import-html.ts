@@ -123,6 +123,16 @@ function pickContent(doc: Document): HTMLElement {
   return doc.body;
 }
 
+/** 去掉板块标题旁「PART 01」这类装饰性标签 */
+function removeDecorations(root: HTMLElement) {
+  root.querySelectorAll("span, div, p, small, em, b, strong").forEach((el) => {
+    if (el.children.length === 0 && /^PART\s*\d+$/i.test(el.textContent?.trim() ?? "")) el.remove();
+  });
+}
+
+/** 开头的「日期：…｜覆盖时段：…」与页面上的日期重复，去掉 */
+const tidy = (md: string) => md.replace(/^(\*\*)?日期[:：][^\n]*(覆盖时段|星期)[^\n]*\n*/m, "").trim();
+
 /** 上传一张内嵌（base64）图片，返回服务器上的地址；失败返回 null */
 async function uploadDataImage(dataUrl: string): Promise<string | null> {
   try {
@@ -171,8 +181,9 @@ export async function htmlFileToMarkdown(file: File): Promise<HtmlImport> {
     inlineComputedStyles(doc);
     const root = pickContent(doc);
     root.querySelectorAll(CHROME_SELECTORS).forEach((el) => el.remove());
+    removeDecorations(root);
     const failedImages = await uploadInlineImages(root);
-    return { markdown: htmlToMarkdown(root.innerHTML), title: doc.title.trim(), failedImages };
+    return { markdown: tidy(htmlToMarkdown(root.innerHTML)), title: doc.title.trim(), failedImages };
   } finally {
     dispose();
   }

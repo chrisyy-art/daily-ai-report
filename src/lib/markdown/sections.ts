@@ -132,6 +132,9 @@ export type Headline = {
 
 const HEADLINE = /^\s*(?:\*\*|__)?\s*【([^】]+)】\s*(?:\*\*|__)?\s*(?:[（(](.*)[）)])?\s*$/s;
 const LINK = /(\[[^\]]*\]\([^)]*\))/;
+const HEADING_TITLE = /^\s*###\s+(?:\*\*|__)?\s*【([^】]+)】\s*(?:\*\*|__)?\s*$/;
+// 来源行：一行、较短、带链接或日期
+const SOURCE_LINE = /^(?=[^\n]{1,160}$)(?=.*(\]\(|\d{1,2}月\d{1,2}日)).+$/;
 
 /** 统一来源行里的分隔符（逗号、竖线），链接本身不动 */
 function normalizeMeta(meta: string): string {
@@ -149,8 +152,17 @@ function normalizeMeta(meta: string): string {
 export function splitHeadline(item: string): Headline | null {
   const [first, ...rest] = item.split(/\n\s*\n/);
   const m = first.replace(/\n/g, " ").match(HEADLINE);
-  if (!m) return null;
-  return { title: m[1].trim(), meta: m[2] ? normalizeMeta(m[2]) : "", body: rest.join("\n\n").trim() };
+  if (m) return { title: m[1].trim(), meta: m[2] ? normalizeMeta(m[2]) : "", body: rest.join("\n\n").trim() };
+
+  // 另一种写法：「### 【标题】」单独一行，下一段是来源行（如「Kimi，10月24日｜[链接](…)」）
+  const h = first.replace(/\n/g, " ").match(HEADING_TITLE);
+  if (!h) return null;
+  const hasMeta = rest.length > 0 && SOURCE_LINE.test(rest[0]);
+  return {
+    title: h[1].trim(),
+    meta: hasMeta ? normalizeMeta(rest[0].trim()) : "",
+    body: (hasMeta ? rest.slice(1) : rest).join("\n\n").trim(),
+  };
 }
 
 export type NewsImage = {

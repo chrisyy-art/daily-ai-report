@@ -33,7 +33,7 @@ function NewsText({ item }: { item: string }) {
   );
 }
 
-/** 新闻配图：16:9，点击打开原图 */
+/** 新闻配图：按原图比例完整显示（不裁切），过高的图限制高度；点击打开原图 */
 function NewsVisual({ image }: { image: NewsImage }) {
   const img = (
     // 图片来自站内上传或原文地址，尺寸不固定，不走 next/image
@@ -43,13 +43,13 @@ function NewsVisual({ image }: { image: NewsImage }) {
       alt={image.alt}
       loading="lazy"
       decoding="async"
-      className={`news-visual-img aspect-video w-full rounded-xl border border-line ${image.contain ? "object-contain bg-white p-2" : "object-cover bg-line/40"}`}
+      className={`news-visual-img mx-auto block h-auto max-h-[260px] w-auto max-w-full rounded-lg border border-line bg-white sm:max-h-[200px] ${image.contain ? "p-2" : ""}`}
     />
   );
   return (
     <figure className="news-visual m-0">
       {image.href ? (
-        <a href={image.href} target="_blank" rel="noopener noreferrer" title="查看原图" className="block rounded-xl">
+        <a href={image.href} target="_blank" rel="noopener noreferrer" title="查看原图" className="block rounded-lg">
           {img}
         </a>
       ) : (
@@ -64,7 +64,7 @@ function NewsItem({ item }: { item: string }) {
   const { image, text } = splitImage(item);
   if (!image) return <NewsText item={text} />;
   return (
-    <div className="news-with-image grid gap-3 sm:grid-cols-[minmax(0,1fr)_200px] sm:items-center sm:gap-6 md:grid-cols-[minmax(0,1fr)_224px]">
+    <div className="news-with-image grid gap-3 sm:grid-cols-[minmax(0,1fr)_200px] sm:items-center sm:gap-6 md:grid-cols-[minmax(0,1fr)_240px]">
       <div className="min-w-0">
         <NewsText item={text} />
       </div>
