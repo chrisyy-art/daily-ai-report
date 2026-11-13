@@ -133,8 +133,13 @@ export type Headline = {
 const HEADLINE = /^\s*(?:\*\*|__)?\s*【([^】]+)】\s*(?:\*\*|__)?\s*(?:[（(](.*)[）)])?\s*$/s;
 const LINK = /(\[[^\]]*\]\([^)]*\))/;
 const HEADING_TITLE = /^\s*###\s+(?:\*\*|__)?\s*【([^】]+)】\s*(?:\*\*|__)?\s*$/;
-// 来源行：一行、较短、带链接或日期
-const SOURCE_LINE = /^(?=[^\n]{1,160}$)(?=.*(\]\(|\d{1,2}月\d{1,2}日)).+$/;
+/** 来源行：一行、可见文字较短（链接地址不计长度）、带链接或日期 */
+function isSourceLine(block: string): boolean {
+  const text = block.trim();
+  if (!text || text.includes("\n")) return false;
+  const visible = text.replace(/\]\([^)]*\)/g, "]");
+  return visible.length <= 80 && /\]\(|\d{1,2}月\d{1,2}日/.test(text);
+}
 
 /** 统一来源行里的分隔符（逗号、竖线），链接本身不动 */
 function normalizeMeta(meta: string): string {
@@ -157,7 +162,7 @@ export function splitHeadline(item: string): Headline | null {
   // 另一种写法：「### 【标题】」单独一行，下一段是来源行（如「Kimi，10月24日｜[链接](…)」）
   const h = first.replace(/\n/g, " ").match(HEADING_TITLE);
   if (!h) return null;
-  const hasMeta = rest.length > 0 && SOURCE_LINE.test(rest[0]);
+  const hasMeta = rest.length > 0 && isSourceLine(rest[0]);
   return {
     title: h[1].trim(),
     meta: hasMeta ? normalizeMeta(rest[0].trim()) : "",
